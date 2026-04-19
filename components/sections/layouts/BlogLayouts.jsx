@@ -130,6 +130,9 @@ export function LearningHubHero({ data, featuredPost, categoryFilter, searchQuer
     const totalCategories = categories.length
     const hasBgImage = !!hero.bgImage
 
+    const align = hero.contentAlign || 'left'
+    const alignClasses = align === 'center' ? 'text-center items-center' : align === 'right' ? 'text-right items-end' : 'text-left items-start'
+
     return (
         <section className={`relative overflow-hidden pt-24 pb-8 ${hasBgImage ? '' : 'bg-[linear-gradient(180deg,#F7FAFF_0%,#EEF5FF_52%,#F4F6F9_100%)]'}`}>
             {hasBgImage && (
@@ -159,19 +162,19 @@ export function LearningHubHero({ data, featuredPost, categoryFilter, searchQuer
                     )}
 
                     <div className="relative z-10 grid gap-8 xl:grid-cols-[1.2fr_0.8fr] xl:items-end">
-                        <div>
+                        <div className={`flex flex-col ${alignClasses}`}>
                             <p className={`inline-flex items-center gap-3 rounded-full border px-4 py-2 text-[11px] font-extrabold uppercase tracking-[0.22em] ${hasBgImage ? 'border-white/20 bg-white/10 text-white' : 'border-primary-100 bg-primary-50 text-primary-700'}`}>
                                 <span className={`h-2 w-2 rounded-full ${hasBgImage ? 'bg-white' : 'bg-primary-600'}`} />
                                 {hero.tag}
                             </p>
-                            <h1 className={`mt-5 max-w-4xl text-4xl font-black tracking-tight sm:text-5xl lg:text-[3.75rem] lg:leading-[1.02] ${hasBgImage ? 'text-white' : 'text-slate-950'}`}>
+                            <h1 className={`mt-5 max-w-4xl text-4xl font-black tracking-tight sm:text-5xl lg:text-[3.75rem] lg:leading-[1.02] ${hasBgImage ? 'text-white' : 'text-slate-950'} ${align === 'center' ? 'mx-auto' : align === 'right' ? 'ml-auto' : ''}`}>
                                 {hero.heading}
                             </h1>
-                            <p className={`mt-5 max-w-3xl text-base font-medium leading-8 md:text-lg ${hasBgImage ? 'text-white/80' : 'text-slate-600'}`}>
+                            <p className={`mt-5 max-w-3xl text-base font-medium leading-8 md:text-lg ${hasBgImage ? 'text-white/80' : 'text-slate-600'} ${align === 'center' ? 'mx-auto' : align === 'right' ? 'ml-auto' : ''}`}>
                                 {hero.subheading}
                             </p>
 
-                            <div className="mt-8 flex flex-wrap gap-4">
+                            <div className={`mt-8 flex flex-wrap gap-4 ${align === 'center' ? 'justify-center' : align === 'right' ? 'justify-end' : 'justify-start'}`}>
                                 <div className={`rounded-[1.5rem] border px-5 py-4 ${hasBgImage ? 'border-white/10 bg-white/5' : 'border-slate-100 bg-slate-50/80'}`}>
                                     <div className={`text-[11px] font-extrabold uppercase tracking-[0.18em] ${hasBgImage ? 'text-white/40' : 'text-slate-400'}`}>Published</div>
                                     <div className={`mt-2 text-2xl font-black ${hasBgImage ? 'text-white' : 'text-slate-950'}`}>{totalPosts}</div>

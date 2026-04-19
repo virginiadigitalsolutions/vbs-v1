@@ -188,6 +188,16 @@ export default function SectionFormBuilder({ section, onSave, onCancel }) {
                             <input type="text" value={data.featuredCtaText || ''} onChange={e => setData({ ...data, featuredCtaText: e.target.value })} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 outline-none focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 text-sm font-medium text-gray-900 transition-all" placeholder="Read article" />
                         </div>
                     </div>
+
+                    <div className="pt-4 border-t border-gray-100">
+                        <label className="block text-xs font-bold text-gray-500 mb-1.5 ml-1">Content Alignment</label>
+                        <select value={data.contentAlign || 'left'} onChange={e => setData({ ...data, contentAlign: e.target.value })} className="w-full bg-white border border-gray-200 rounded-xl px-4 py-2.5 outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 text-sm font-medium text-gray-900 transition-all shadow-sm">
+                            <option value="left">Left Aligned</option>
+                            <option value="center">Center Aligned</option>
+                            <option value="right">Right Aligned</option>
+                        </select>
+                        <p className="text-[11px] font-medium text-gray-400 mt-2 ml-1">Controls the horizontal positioning of text and elements in the hero content area.</p>
+                    </div>
                 </div>
             )}
         </div>
