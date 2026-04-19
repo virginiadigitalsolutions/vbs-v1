@@ -149,7 +149,31 @@ export default function SectionFormBuilder({ section, onSave, onCancel }) {
             )}
 
             {isLearningHubHero && (
-                <div className="bg-white border text-gray-900 border-gray-200 rounded-2xl p-5 shadow-sm">
+                <div className="bg-white border text-gray-900 border-gray-200 rounded-2xl p-5 shadow-sm space-y-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 pb-6 border-b border-gray-100">
+                        <div className="sm:col-span-2">
+                            <label className="block text-xs font-bold text-gray-500 mb-1.5 ml-1">Learning Hub Tag (Eyebrow)</label>
+                            <input type="text" value={data.tag || ''} onChange={e => setData({ ...data, tag: e.target.value })} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 outline-none focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 text-sm font-medium text-gray-900 transition-all" placeholder="Learning Hub" />
+                        </div>
+                        <div className="sm:col-span-2">
+                            <label className="block text-xs font-bold text-gray-500 mb-1.5 ml-1">Main Heading</label>
+                            <input type="text" value={data.heading || ''} onChange={e => setData({ ...data, heading: e.target.value })} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 outline-none focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 text-sm font-medium text-gray-900 transition-all" placeholder="Enter headline..." />
+                        </div>
+                        <div className="sm:col-span-2">
+                            <label className="block text-xs font-bold text-gray-500 mb-1.5 ml-1">Subheading</label>
+                            <textarea value={data.subheading || ''} onChange={e => setData({ ...data, subheading: e.target.value })} rows={3} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 outline-none focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 text-sm font-medium text-gray-900 resize-y transition-all" placeholder="Supporting text..." />
+                        </div>
+                        <div className="sm:col-span-2">
+                            <label className="block text-xs font-bold text-gray-500 mb-1.5 ml-1">Background Image URL (Optional)</label>
+                            <div className="flex gap-3">
+                                <input type="text" value={data.bgImage || ''} onChange={e => setData({ ...data, bgImage: e.target.value })} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 outline-none focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 text-sm font-medium text-gray-900 transition-all font-mono" placeholder="https://..." />
+                                <button type="button" onClick={() => window.open('/admin/media', '_blank')} className="px-4 py-2 bg-indigo-50 text-indigo-700 font-bold text-xs rounded-xl border border-indigo-200 hover:bg-indigo-100 transition-colors whitespace-nowrap">
+                                    Browse
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                         <div>
                             <label className="block text-xs font-bold text-gray-500 mb-1.5 ml-1">Search Placeholder</label>

@@ -44,7 +44,7 @@ function renderBlock(block, postTitle) {
         return (
             <div
                 key={block.id}
-                className="prose prose-lg prose-neutral prose-headings:font-extrabold prose-p:text-gray-600 prose-a:text-primary-600 prose-strong:text-gray-900 max-w-none"
+                className="prose prose-lg prose-neutral max-w-none break-words prose-headings:font-extrabold prose-p:text-gray-600 prose-a:text-primary-600 prose-strong:text-gray-900 [&_*]:max-w-full [&_*]:break-words"
                 dangerouslySetInnerHTML={{ __html: block.data.html }}
             />
         )
@@ -213,81 +213,87 @@ export default async function BlogPostPage({ params }) {
                 }}
             />
 
-            {/* NEW PREMIUM HEADER */}
-            <section className="relative overflow-hidden bg-[#fafcff] pt-28 pb-8 xl:pt-36 xl:pb-12 border-b border-gray-100">
-                <Container className="relative z-10 max-w-[1200px] px-6 text-center">
-                    <Link href="/learning-hub" className="group mb-8 inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-1.5 text-[13px] font-bold text-gray-500 shadow-sm transition-all hover:bg-gray-50 hover:text-primary-600 hover:border-primary-200">
-                        <span className="transition-transform group-hover:-translate-x-1">←</span>
-                        Back to Learning Hub
-                    </Link>
+            {/* HERO SPLIT CARD LAYOUT */}
+            <section className="bg-[#fbfcff] pt-24 pb-12 xl:pt-32 xl:pb-12 border-b border-gray-100 relative">
+                {/* Background decorative elements */}
+                <div className="absolute top-0 right-0 w-1/2 h-[500px] bg-linear-to-bl from-cyan-50/50 to-transparent pointer-events-none rounded-bl-full"></div>
+                
+                <Container className="relative z-10 max-w-[1400px] px-6">
+                    <div className="mb-6">
+                        <Link href="/learning-hub" className="inline-flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-primary-600 transition-colors">
+                            <span>←</span>
+                            Back to Learning Hub
+                        </Link>
+                    </div>
 
-                    {/* Metadata One-liner */}
-                    <div className="flex flex-wrap items-center justify-center gap-4 text-xs font-bold text-gray-400 uppercase tracking-widest">
-                        {post.category && (
-                            <span className="rounded-md border border-primary-200/50 bg-primary-50 px-3 py-1 text-primary-700 shadow-sm">
-                                {post.category.name}
-                            </span>
-                        )}
-                        <span className="flex items-center gap-1.5">
-                            <svg className="w-3.5 h-3.5 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-                            {publishedAt.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
-                        </span>
-                        <span>•</span>
-                        <span className="flex items-center gap-1.5">
-                            <svg className="w-3.5 h-3.5 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                            {readTime} Min Read
-                        </span>
+                    <div className="flex flex-col xl:flex-row bg-white rounded-[2rem] overflow-hidden shadow-2xl shadow-gray-200/50 border border-gray-100 min-h-[300px]">
+                        
+                        {/* LEFT SIDE: Image */}
+                        <div className="xl:w-1/2 relative min-h-[250px] overflow-hidden">
+                            {post.featuredImg ? (
+                                <img src={post.featuredImg} alt={resolveImageAlt(post.featuredImgAlt, post.title)} className="absolute inset-0 w-full h-full object-cover" />
+                            ) : (
+                                <div className="absolute inset-0 bg-linear-to-br from-[#0A4186] to-[#041a35] flex items-center justify-center text-8xl font-black text-white/20">
+                                    {post.title.charAt(0)}
+                                </div>
+                            )}
+                        </div>
+
+                        {/* RIGHT SIDE: Content (Slimmer without H1) */}
+                        <div className="xl:w-1/2 p-8 md:p-10 xl:p-12 flex flex-col justify-center">
+                            <div className="mb-6 font-extrabold uppercase tracking-[0.2em] text-[#869ab8] text-sm">
+                                Featured Article
+                            </div>
+
+                            <div className="mb-6 flex flex-wrap items-center gap-4 text-sm font-bold text-[#869ab8] uppercase tracking-widest">
+                                {post.category && (
+                                    <span className="rounded-full bg-[#f0f4f8] text-[#0A4186] px-4 py-1.5 font-black uppercase text-xs">
+                                        {post.category.name}
+                                    </span>
+                                )}
+                                <span>{publishedAt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                                <span>{readTime} Min Read</span>
+                            </div>
+
+                            {(post.excerpt || post.metaDesc) && (
+                                <p className="text-[#0A4186] text-2xl md:text-3xl xl:text-4xl font-black leading-[1.3] mb-auto line-clamp-3">
+                                    {post.excerpt || post.metaDesc}
+                                </p>
+                            )}
+
+                            <div className="mt-8 pt-6 border-t border-gray-100 flex items-center justify-between">
+                                <Link href={`/learning-hub/authors/${post.author.id}`} className="group flex items-center gap-4">
+                                    <div className="w-12 h-12 rounded-full bg-[#f0f4f8] flex items-center justify-center text-[#0A4186] font-black text-base overflow-hidden">
+                                        {post.author.avatar ? (
+                                            <img src={post.author.avatar} alt={post.author.name} className="h-full w-full object-cover" />
+                                        ) : (
+                                            post.author.name.charAt(0)
+                                        )}
+                                    </div>
+                                    <div>
+                                        <span className="font-extrabold text-gray-900 text-base group-hover:text-primary-600 transition-colors">{post.author.name}</span>
+                                    </div>
+                                </Link>
+                                
+                                <div className="text-[#0A4186] font-bold text-sm tracking-wide">
+                                    Admin • VBS
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </Container>
             </section>
 
-            {/* Featured Image (Banner) */}
-            <Container className="max-w-[1200px] px-6 mt-10 mb-12 relative z-20">
-                <div className="aspect-[16/9] lg:aspect-[2.4/1] w-full overflow-hidden rounded-[2.5rem] bg-white border-[6px] border-white shadow-2xl shadow-gray-200/50">
-                    {post.featuredImg ? (
-                        <img src={post.featuredImg} alt={resolveImageAlt(post.featuredImgAlt, post.title)} className="h-full w-full object-cover rounded-[2rem]" />
-                    ) : (
-                        <div className="flex h-full w-full items-center justify-center bg-gray-50 text-8xl font-black text-gray-200 rounded-[2rem]">
-                            {post.title.charAt(0)}
-                        </div>
-                    )}
-                </div>
-            </Container>
-
-            <section className="pb-24">
-                <Container className="max-w-[1000px] px-6 text-center mb-16">
-                    {/* H1 (After Banner) */}
-                    <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black leading-[1.1] tracking-tight text-gray-900 mb-6 mx-auto -tracking-[0.02em] max-w-[900px]">
+            {/* FULL WIDTH H1 AFTER HERO */}
+            <section className="bg-[#f3f6fb] pt-12 pb-6 xl:pt-16 xl:pb-8 border-b border-gray-100">
+                <Container className="max-w-[1200px] px-6 text-center">
+                    <h1 className="text-4xl md:text-5xl xl:text-6xl font-black text-[#0A4186] leading-[1.1] md:leading-[1.15] tracking-tight text-balance mx-auto">
                         {post.h1 || post.title}
                     </h1>
-
-                    {/* Excerpt */}
-                    {(post.excerpt || post.metaDesc) && (
-                        <p className="text-xl sm:text-2xl leading-[1.6] text-gray-500 font-medium mb-10 max-w-[800px] mx-auto text-balance">
-                            {post.excerpt || post.metaDesc}
-                        </p>
-                    )}
-
-                    {/* Minimal Author Box */}
-                    <div className="flex items-center justify-center gap-4 max-w-sm mx-auto">
-                        <Link href={`/learning-hub/authors/${post.author.id}`} className="group flex items-center gap-4">
-                            <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-full ring-2 ring-white shadow-md bg-gray-100 text-lg font-black text-gray-500 border border-gray-200">
-                                {post.author.avatar ? (
-                                    <img src={post.author.avatar} alt={post.author.name} className="h-full w-full object-cover transition-transform group-hover:scale-110" />
-                                ) : (
-                                    post.author.name.charAt(0)
-                                )}
-                            </div>
-                            <div className="text-left">
-                                <p className="text-sm font-extrabold text-gray-900 group-hover:text-primary-600 transition-colors">{post.author.name}</p>
-                                <p className="text-[10px] uppercase tracking-[0.2em] font-bold text-gray-400">
-                                    {post.author.designation || 'Technical Author'}
-                                </p>
-                            </div>
-                        </Link>
-                    </div>
                 </Container>
+            </section>
 
+            <section className="bg-[#f3f6fb] py-12 xl:py-16">
                 <Container className="max-w-[1536px] px-6">
                     <div className="grid grid-cols-1 gap-10 xl:grid-cols-[280px_minmax(0,1fr)_280px] xl:items-start">
                         <aside className="xl:sticky xl:top-28 xl:self-start">
@@ -311,11 +317,11 @@ export default async function BlogPostPage({ params }) {
                         <main className="min-w-0">
                             <div className="rounded-[2.5rem] border border-gray-100 bg-white p-8 shadow-xl shadow-gray-200/30 md:p-12 xl:p-14">
                                 {blocks ? (
-                                    <div className="max-w-full overflow-hidden space-y-4">
+                                    <div className="max-w-full space-y-4 overflow-visible">
                                         {blocks.map((block) => renderBlock(block, post.title))}
                                     </div>
                                 ) : (
-                                    <article className="prose prose-lg prose-neutral prose-headings:font-extrabold prose-headings:tracking-tight prose-p:text-gray-600 prose-img:rounded-2xl prose-img:shadow-xl prose-p:leading-relaxed max-w-none">
+                                    <article className="prose prose-lg prose-neutral max-w-none break-words prose-headings:font-extrabold prose-headings:tracking-tight prose-p:text-gray-600 prose-img:rounded-2xl prose-img:shadow-xl prose-p:leading-relaxed [&_*]:max-w-full [&_*]:break-words">
                                         <ReactMarkdown>{post.content}</ReactMarkdown>
                                     </article>
                                 )}
