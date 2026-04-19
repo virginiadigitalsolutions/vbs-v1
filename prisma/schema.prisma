@@ -1,0 +1,161 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  SUPER_ADMIN
+  EDITOR
+  VIEWER
+}
+
+model AdminUser {
+  id           Int      @id @default(autoincrement())
+  email        String   @unique
+  passwordHash String
+  name         String
+  role         Role     @default(EDITOR)
+  isActive     Boolean  @default(true)
+  avatar       String?
+  bio          String?  @db.Text
+  designation  String?
+  socialLinks  Json?    // { linkedin, twitter, github, website }
+  createdAt    DateTime @default(now())
+
+  // Relations
+  posts Post[] @relation("PostAuthor")
+}
+
+model Page {
+  id          Int       @id @default(autoincrement())
+  slug        String    @unique
+  title       String
+  metaDesc    String?   @db.Text
+  isPublished Boolean   @default(true)
+  sections    Section[]
+}
+
+model Section {
+  id       Int     @id @default(autoincrement())
+  pageId   Int
+  type     String // hero | cards | text | cta
+  order    Int     @default(0)
+  isActive Boolean @default(true)
+  data     Json
+  page     Page    @relation(fields: [pageId], references: [id], onDelete: Cascade)
+}
+
+model Contact {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String
+  phone     String?
+  subject   String?
+  message   String   @db.Text
+  status    String   @default("NEW")     // NEW | READ | REPLIED | ARCHIVED
+  notes     String?  @db.Text            // Internal admin notes
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ─── Phase 2: Blog Engine ──────────────────────────────────────────────────
+
+model Post {
+  id          Int      @id @default(autoincrement())
+  slug        String   @unique
+  title       String
+  h1          String?
+  metaTitle   String?
+  metaDesc    String?  @db.Text
+  showToc     Boolean  @default(true)
+  excerpt     String?  @db.Text
+  content     String   @db.LongText
+  featuredImg String?
+  featuredImgAlt String?
+  publishedAt DateTime @default(now())
+  readTimeMinutes Int?
+  isPublished Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  authorId Int
+  author   AdminUser @relation("PostAuthor", fields: [authorId], references: [id])
+
+  categoryId Int?
+  category   Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+
+  tags Tag[] @relation("PostTags")
+}
+
+model Category {
+  id    Int    @id @default(autoincrement())
+  slug  String @unique
+  name  String
+  posts Post[]
+}
+
+model Tag {
+  id    Int    @id @default(autoincrement())
+  slug  String @unique
+  name  String
+  posts Post[] @relation("PostTags")
+}
+
+// ─── Phase 2: Media Library ───────────────────────────────────────────────
+
+model Media {
+  id          Int      @id @default(autoincrement())
+  filename    String
+  url         String   @unique
+  mimeType    String
+  sizeBytes   Int
+  base64Data  String?  @db.LongText
+  createdAt   DateTime @default(now())
+}
+
+// ─── Phase 7: Global Site Settings ────────────────────────────────────────
+
+model SiteSettings {
+  id              Int      @id @default(autoincrement())
+  siteName        String   @default("Virginia Business Solutions")
+  logoUrl         String?  // Optional logo image URL
+  contactEmail    String?
+  contactPhone    String?
+  footerText      String?  @db.Text
+  seoDefaultTitle String   @default("VBS - Digital Career Guidance")
+  seoDefaultDesc  String?  @db.Text
+  socialLinks     Json? // {linkedin, twitter, github, etc}
+  navLinks        Json? // JSON array of {label, url} for navbar
+  
+  // Blog specific configs
+  blogBannerTitle    String?  @default("Build Louder.")
+  blogBannerSubtitle String?  @db.Text
+  blogMetaTitle      String?  @default("VBS Engineering Blog")
+  blogMetaDesc       String?  @db.Text
+
+  updatedAt       DateTime @updatedAt
+}
+
+// ─── Phase 8: Affiliate Marketing Links ───────────────────────────────────
+
+model AffiliateLink {
+  id          Int      @id @default(autoincrement())
+  title       String
+  url         String   @db.Text
+  platform    String   @default("Other") // Coursera, Udemy, AWS, Google, etc.
+  category    String   @default("Course") // Course, Tool, Certification, Book
+  description String?  @db.Text
+  commission  String?  // e.g. "15%" or "$50 per sale"
+  clicks      Int      @default(0)
+  isActive    Boolean  @default(true)
+  isFeatured  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
