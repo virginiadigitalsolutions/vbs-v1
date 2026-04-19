@@ -1,4 +1,6 @@
 import { Jost } from 'next/font/google'
+import { Analytics } from '@vercel/analytics/react'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 import Providers from '@/app/providers'
 import ClientEnhancements from '@/components/ui/ClientEnhancements'
 import './globals.css'
@@ -37,6 +39,8 @@ export default function RootLayout({ children }) {
                 <Providers>
                     <ClientEnhancements />
                     {children}
+                    <Analytics />
+                    <SpeedInsights />
                 </Providers>
             </body>
         </html>
