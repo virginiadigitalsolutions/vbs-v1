@@ -1,3 +1,4 @@
+import Script from 'next/script'
 import { Jost } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/next'
@@ -19,6 +20,9 @@ export const metadata = {
         'Practical courses, career guides and expert mentorship for students, early-career and working professionals.',
     metadataBase: new URL(getBaseUrl()),
     manifest: '/manifest.json',
+    verification: {
+        google: 'AzeiQxAvLcoj0BoH0lfYdx5U04yEC_XPo_PcltHQhnA',
+    },
     appleWebApp: {
         capable: true,
         statusBarStyle: 'default',
@@ -35,6 +39,20 @@ export const viewport = {
 export default function RootLayout({ children }) {
     return (
         <html lang="en">
+            <head>
+                <Script
+                    src="https://www.googletagmanager.com/gtag/js?id=G-Q1LM9373N7"
+                    strategy="afterInteractive"
+                />
+                <Script id="google-analytics" strategy="afterInteractive">
+                    {`
+                        window.dataLayer = window.dataLayer || [];
+                        function gtag(){dataLayer.push(arguments);}
+                        gtag('js', new Date());
+                        gtag('config', 'G-Q1LM9373N7');
+                    `}
+                </Script>
+            </head>
             <body className={`${jost.className} antialiased relative min-h-screen`}>
                 <Providers>
                     <ClientEnhancements />
