@@ -58,8 +58,8 @@ NEXTAUTH_URL="http://localhost:3000"
 NEXTAUTH_SECRET="replace-with-a-secure-secret"
 NEXT_PUBLIC_SITE_URL="http://localhost:3000"
 
-ADMIN_EMAIL="admin@vbs.com"
-ADMIN_PASSWORD="Admin@123"
+ADMIN_EMAIL=
+ADMIN_PASSWORD=
 
 SMTP_HOST="smtp.gmail.com"
 SMTP_PORT="587"
