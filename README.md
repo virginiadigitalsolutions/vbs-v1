@@ -205,7 +205,7 @@ Roles are defined in Prisma as `SUPER_ADMIN`, `EDITOR`, and `VIEWER`.
 The root layout includes:
 
 - Google site verification
-- Google Analytics measurement 
+- Google Analytics measurement
 - Vercel Analytics
 - Vercel Speed Insights
 - App metadata, manifest, sitemap, robots, and JSON-LD helpers

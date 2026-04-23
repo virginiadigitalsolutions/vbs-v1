@@ -1,6 +1,7 @@
 import { prisma, queryWithRetry } from '@/lib/db'
 import Container from '@/components/ui/Container'
 import Link from 'next/link'
+import Image from 'next/image'
 import Breadcrumbs from '@/components/ui/Breadcrumbs'
 import { Reveal, StaggerChildren, Child } from '@/components/ui/Reveal'
 import { FloatingShapes, GradientOrb } from '@/components/ui/SectionVectors'
@@ -9,6 +10,22 @@ import { FaLinkedin, FaGithub } from 'react-icons/fa'
 import { FaXTwitter } from 'react-icons/fa6'
 import { HiOutlineGlobe } from 'react-icons/hi'
 import { resolveImageAlt, resolvePublishedAt, resolveReadTimeMinutes } from '@/lib/blog'
+
+export const revalidate = 300
+
+export async function generateStaticParams() {
+    const authors = await queryWithRetry(() =>
+        prisma.adminUser.findMany({
+            where: {
+                isActive: true,
+                posts: { some: { isPublished: true } },
+            },
+            select: { id: true },
+        })
+    )
+
+    return authors.map((author) => ({ id: String(author.id) }))
+}
 
 export async function generateMetadata({ params }) {
     const { id } = await params
@@ -55,7 +72,13 @@ export default async function AuthorProfilePage({ params }) {
                         {/* Avatar */}
                         <div className="w-32 h-32 md:w-40 md:h-40 rounded-3xl bg-violet-100 text-violet-700 flex items-center justify-center font-bold text-5xl mb-8 overflow-hidden border-4 border-violet-200 mx-auto shadow-2xl shadow-violet-500/10">
                             {author.avatar ? (
-                                <img src={author.avatar} alt={author.name} className="w-full h-full object-cover" />
+                                <Image
+                                    src={author.avatar}
+                                    alt={author.name}
+                                    width={160}
+                                    height={160}
+                                    className="h-full w-full object-cover"
+                                />
                             ) : (
                                 author.name.charAt(0)
                             )}
@@ -115,7 +138,13 @@ export default async function AuthorProfilePage({ params }) {
                                         {/* Thumbnail */}
                                         <div className="h-52 bg-gray-50 flex items-center justify-center border-b border-gray-100 relative overflow-hidden">
                                             {post.featuredImg ? (
-                                                <img src={post.featuredImg} alt={resolveImageAlt(post.featuredImgAlt, post.title)} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                                                <Image
+                                                    src={post.featuredImg}
+                                                    alt={resolveImageAlt(post.featuredImgAlt, post.title)}
+                                                    fill
+                                                    sizes="(min-width: 1024px) 360px, (min-width: 768px) 50vw, 92vw"
+                                                    className="object-cover group-hover:scale-105 transition-transform duration-700"
+                                                />
                                             ) : (
                                                 <span className="text-4xl group-hover:scale-110 transition-transform duration-300">📝</span>
                                             )}

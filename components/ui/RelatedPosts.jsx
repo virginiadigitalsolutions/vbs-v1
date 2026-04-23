@@ -1,5 +1,6 @@
 import { prisma, queryWithRetry } from '@/lib/db'
 import Link from 'next/link'
+import Image from 'next/image'
 import { resolveImageAlt } from '@/lib/blog'
 
 export default async function RelatedPosts({ currentSlug, categoryId, limit = 3 }) {
@@ -76,10 +77,12 @@ export default async function RelatedPosts({ currentSlug, categoryId, limit = 3 
                         >
                             <div className="h-36 bg-gray-100 flex items-center justify-center relative overflow-hidden">
                                 {post.featuredImg ? (
-                                    <img
+                                    <Image
                                         src={post.featuredImg}
                                         alt={resolveImageAlt(post.featuredImgAlt, post.title)}
-                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                        fill
+                                        sizes="(min-width: 768px) 320px, 92vw"
+                                        className="object-cover group-hover:scale-105 transition-transform duration-500"
                                     />
                                 ) : (
                                     <span className="text-3xl">📝</span>

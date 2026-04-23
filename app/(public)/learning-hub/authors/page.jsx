@@ -1,6 +1,7 @@
 import { prisma, queryWithRetry } from '@/lib/db'
 import Container from '@/components/ui/Container'
 import Link from 'next/link'
+import Image from 'next/image'
 import Breadcrumbs from '@/components/ui/Breadcrumbs'
 import { Reveal, StaggerChildren, Child } from '@/components/ui/Reveal'
 import { FloatingShapes, GradientOrb } from '@/components/ui/SectionVectors'
@@ -9,6 +10,8 @@ export const metadata = {
     title: 'Our Authors | VBS Learning Hub',
     description: 'Meet the writers and engineers behind the VBS Learning Hub.',
 }
+
+export const revalidate = 300
 
 export default async function AuthorsListPage() {
     const authors = await queryWithRetry(() =>
@@ -59,7 +62,13 @@ export default async function AuthorsListPage() {
                                     {/* Avatar */}
                                     <div className="w-24 h-24 rounded-2xl bg-violet-100 text-violet-700 flex items-center justify-center font-bold text-3xl mb-6 overflow-hidden border-2 border-violet-200 group-hover:scale-105 transition-transform">
                                         {author.avatar ? (
-                                            <img src={author.avatar} alt={author.name} className="w-full h-full object-cover" />
+                                            <Image
+                                                src={author.avatar}
+                                                alt={author.name}
+                                                width={96}
+                                                height={96}
+                                                className="h-full w-full object-cover"
+                                            />
                                         ) : (
                                             author.name.charAt(0)
                                         )}

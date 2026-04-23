@@ -3,7 +3,36 @@ import Container from '@/components/ui/Container'
 import Link from 'next/link'
 import { prisma, queryWithRetry } from '@/lib/db'
 import { notFound } from 'next/navigation'
-export const dynamic = 'force-dynamic'
+
+export const revalidate = 300
+
+export async function generateStaticParams() {
+    const reservedSlugs = [
+        'home',
+        'about-us',
+        'digital-skills',
+        'courses-certifications',
+        'career-guides',
+        'contact',
+        'resources',
+        'skill-quiz',
+        'learning-hub',
+        'admin',
+        'api',
+    ]
+
+    const pages = await queryWithRetry(() =>
+        prisma.page.findMany({
+            where: {
+                isPublished: true,
+                slug: { notIn: reservedSlugs },
+            },
+            select: { slug: true },
+        })
+    )
+
+    return pages.map((page) => ({ slug: page.slug }))
+}
 
 export async function generateMetadata({ params }) {
     const { slug } = await params

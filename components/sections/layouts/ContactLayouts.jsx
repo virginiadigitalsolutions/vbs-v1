@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion'
 import Link from 'next/link'
+import Image from 'next/image'
 import Container from '@/components/ui/Container'
 import Breadcrumbs from '@/components/ui/Breadcrumbs'
 import { Reveal } from '@/components/ui/Reveal'
@@ -96,10 +97,12 @@ export function ContactHero({ data }) {
                             <Reveal delay={0.2} xOffset={align === 'left' ? 40 : -40}>
                                 <div className="relative mx-auto max-w-[600px] overflow-hidden rounded-2xl shadow-2xl shadow-primary-500/10 border border-gray-200/50 dark:border-white/10">
                                     <div className="aspect-4/3 w-full bg-gray-100 dark:bg-slate-800">
-                                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                                        <img 
-                                            src={data.image} 
-                                            alt={data.heading || "Hero Image"} 
+                                        <Image
+                                            src={data.image}
+                                            alt={data.heading || "Hero Image"}
+                                            width={600}
+                                            height={450}
+                                            sizes="(min-width: 1024px) 600px, 92vw"
                                             className="h-full w-full object-cover object-center"
                                         />
                                     </div>

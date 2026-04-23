@@ -216,6 +216,7 @@ export function HomeHero({ data }) {
                                                 src={data.image || '/images/home/hero-career.png'}
                                                 alt={data.heading || 'Career Growth'}
                                                 fill
+                                                sizes="(min-width: 1024px) 610px, 92vw"
                                                 priority
                                                 className="object-cover transition-transform duration-700 hover:scale-105"
                                             />
@@ -268,7 +269,7 @@ export function HomeAudience({ data }) {
                             <Reveal delay={0.18} xOffset={36}>
                                 <div className="relative mx-auto max-w-[430px] overflow-hidden rounded-[2rem] border border-white/70 bg-white p-3 shadow-[0_16px_40px_rgba(15,23,42,0.1)]">
                                     <div className="relative aspect-square overflow-hidden rounded-[1.35rem]">
-                                        <Image src={data.image} alt={data.heading} fill className="object-cover transition-transform duration-700 hover:scale-105" />
+                                        <Image src={data.image} alt={data.heading} fill sizes="(min-width: 1024px) 430px, 92vw" className="object-cover transition-transform duration-700 hover:scale-105" />
                                     </div>
                                 </div>
                             </Reveal>
@@ -291,6 +292,7 @@ export function HomeAudience({ data }) {
                                                 src={card.image || tint.image}
                                                 alt={card.title}
                                                 fill
+                                                sizes="(min-width: 1024px) 390px, (min-width: 768px) 50vw, 92vw"
                                                 className="object-cover transition-transform duration-700 group-hover:scale-105"
                                             />
                                             <div className="absolute inset-0 bg-gradient-to-t from-slate-950/20 via-transparent to-white/10" />
@@ -386,6 +388,7 @@ export function HomeChallenge({ data }) {
                                             src={data.image || '/images/home/challenge-confusion.png'}
                                             alt={data.heading || 'Career confusion'}
                                             fill
+                                            sizes="(min-width: 1024px) 560px, 92vw"
                                             className="object-cover transition-transform duration-700 hover:scale-105"
                                         />
                                         <div className="absolute inset-0 bg-gradient-to-t from-slate-950/20 via-transparent to-white/5" />
@@ -450,6 +453,7 @@ export function HomeFramework({ data }) {
                                                     src={card.image || '/images/home/hero-career.png'}
                                                     alt={card.title}
                                                     fill
+                                                    sizes="(min-width: 1024px) 390px, 92vw"
                                                     className="object-cover transition-transform duration-700 group-hover:scale-105"
                                                 />
                                                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950/35 via-slate-950/10 to-white/5" />
@@ -500,6 +504,7 @@ export function HomeFramework({ data }) {
                                             src={card.image || '/images/home/hero-career.png'}
                                             alt={card.title}
                                             fill
+                                            sizes="92vw"
                                             className="object-cover"
                                         />
                                         <div className="absolute inset-0 bg-gradient-to-t from-slate-950/25 via-transparent to-white/10" />
@@ -581,7 +586,7 @@ export function HomeStandards({ data }) {
                                 <div className="group h-full overflow-hidden rounded-[1.75rem] border border-slate-200 bg-white shadow-[0_10px_30px_rgba(0,0,0,0.08)] transition-all duration-500 hover:-translate-y-1.5 hover:shadow-[0_18px_40px_rgba(37,99,235,0.12)]">
                                     {item.image && (
                                         <div className="relative h-44 overflow-hidden border-b border-slate-100">
-                                            <Image src={item.image} alt={item.title} fill className="object-cover transition-transform duration-700 group-hover:scale-105" />
+                                            <Image src={item.image} alt={item.title} fill sizes="(min-width: 1024px) 390px, (min-width: 768px) 50vw, 92vw" className="object-cover transition-transform duration-700 group-hover:scale-105" />
                                             <div className="absolute inset-0 bg-gradient-to-t from-slate-950/20 via-transparent to-white/5" />
                                         </div>
                                     )}

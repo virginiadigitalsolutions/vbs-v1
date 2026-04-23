@@ -1,12 +1,32 @@
 import { prisma, queryWithRetry } from '@/lib/db'
 import Container from '@/components/ui/Container'
 import Link from 'next/link'
+import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import ShareButtons from '@/components/ui/ShareButtons'
 import RelatedPosts from '@/components/ui/RelatedPosts'
 import JsonLd from '@/components/ui/JsonLd'
 import ReactMarkdown from 'react-markdown'
 import { parseBlogBlocks, resolveImageAlt, resolvePublishedAt, resolveReadTimeMinutes } from '@/lib/blog'
+
+export const revalidate = 300
+
+export async function generateStaticParams() {
+    const posts = await queryWithRetry(() =>
+        prisma.post.findMany({
+            where: { isPublished: true },
+            select: {
+                slug: true,
+                category: { select: { slug: true } },
+            },
+        })
+    )
+
+    return posts.map((post) => ({
+        slug: post.category?.slug || 'posts',
+        postSlug: post.slug,
+    }))
+}
 
 export async function generateMetadata({ params }) {
     const { postSlug } = await params
@@ -231,7 +251,14 @@ export default async function BlogPostPage({ params }) {
                         {/* LEFT SIDE: Image */}
                         <div className="xl:w-1/2 relative min-h-[250px] overflow-hidden">
                             {post.featuredImg ? (
-                                <img src={post.featuredImg} alt={resolveImageAlt(post.featuredImgAlt, post.title)} className="absolute inset-0 w-full h-full object-cover" />
+                                <Image
+                                    src={post.featuredImg}
+                                    alt={resolveImageAlt(post.featuredImgAlt, post.title)}
+                                    fill
+                                    priority
+                                    sizes="(min-width: 1280px) 700px, 100vw"
+                                    className="object-cover"
+                                />
                             ) : (
                                 <div className="absolute inset-0 bg-linear-to-br from-[#0A4186] to-[#041a35] flex items-center justify-center text-8xl font-black text-white/20">
                                     {post.title.charAt(0)}
@@ -265,7 +292,13 @@ export default async function BlogPostPage({ params }) {
                                 <Link href={`/learning-hub/authors/${post.author.id}`} className="group flex items-center gap-4">
                                     <div className="w-12 h-12 rounded-full bg-[#f0f4f8] flex items-center justify-center text-[#0A4186] font-black text-base overflow-hidden">
                                         {post.author.avatar ? (
-                                            <img src={post.author.avatar} alt={post.author.name} className="h-full w-full object-cover" />
+                                            <Image
+                                                src={post.author.avatar}
+                                                alt={post.author.name}
+                                                width={48}
+                                                height={48}
+                                                className="h-full w-full object-cover"
+                                            />
                                         ) : (
                                             post.author.name.charAt(0)
                                         )}

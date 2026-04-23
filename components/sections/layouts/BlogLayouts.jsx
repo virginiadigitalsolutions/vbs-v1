@@ -100,6 +100,7 @@ export function BlogHero({ data }) {
                                             src={data.image}
                                             alt={data.heading || 'Hero Image'}
                                             fill
+                                            sizes="(min-width: 1024px) 600px, 92vw"
                                             className="h-full w-full object-cover object-center"
                                         />
                                     </div>
@@ -260,7 +261,13 @@ export function LearningHubFeed({ data, visiblePosts = [], categories = [], cate
                                     <Link href={`/learning-hub/${post.category?.slug || 'posts'}/${post.slug}`} className="group relative flex h-full flex-col overflow-hidden rounded-[1.9rem] border border-white/80 bg-white shadow-[0_12px_36px_rgba(15,23,42,0.06)] transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(37,99,235,0.12)]">
                                         <div className="relative h-56 overflow-hidden bg-slate-50">
                                             {post.featuredImg ? (
-                                                <img src={post.featuredImg} alt={resolveImageAlt(post.featuredImgAlt, post.title)} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                                                <Image
+                                                    src={post.featuredImg}
+                                                    alt={resolveImageAlt(post.featuredImgAlt, post.title)}
+                                                    fill
+                                                    sizes="(min-width: 1280px) 390px, (min-width: 768px) 50vw, 92vw"
+                                                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                                                />
                                             ) : (
                                                 <div className="flex h-full items-center justify-center bg-gradient-to-br from-slate-100 via-blue-50 to-cyan-100 text-5xl font-black text-primary-700">
                                                     {post.title.charAt(0)}
@@ -289,7 +296,13 @@ export function LearningHubFeed({ data, visiblePosts = [], categories = [], cate
                                                 <span className="flex items-center gap-2 text-xs font-bold text-gray-900">
                                                     <div className="flex h-7 w-7 items-center justify-center overflow-hidden rounded-full bg-primary-50 text-[10px] text-primary-600">
                                                         {post.author?.avatar ? (
-                                                            <img src={post.author.avatar} alt={post.author.name} className="h-full w-full object-cover" />
+                                                            <Image
+                                                                src={post.author.avatar}
+                                                                alt={post.author.name}
+                                                                width={28}
+                                                                height={28}
+                                                                className="h-full w-full object-cover"
+                                                            />
                                                         ) : (
                                                             post.author?.name?.charAt(0) || 'A'
                                                         )}
