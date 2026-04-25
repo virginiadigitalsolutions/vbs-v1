@@ -719,6 +719,19 @@ export default function EditBlogPost({ params }) {
                                 color: #475569;
                                 font-style: italic;
                             }
+                            .learning-editor-shell .ql-editor .ql-align-center { text-align: center; }
+                            .learning-editor-shell .ql-editor .ql-align-right { text-align: right; }
+                            .learning-editor-shell .ql-editor .ql-align-justify { text-align: justify; }
+                            .learning-editor-shell .ql-editor .ql-align-center img {
+                                display: block;
+                                margin-left: auto;
+                                margin-right: auto;
+                            }
+                            .learning-editor-shell .ql-editor .ql-align-right img {
+                                display: block;
+                                margin-left: auto;
+                                margin-right: 0;
+                            }
                         `}</style>
                     </div>
 

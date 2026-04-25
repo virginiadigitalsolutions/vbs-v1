@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { HiOutlineMail, HiOutlinePhone, HiOutlineCalendar, HiOutlineSearch, HiOutlineTrash, HiOutlineEye, HiOutlineX, HiOutlineChat, HiOutlineRefresh } from 'react-icons/hi'
+import { AdminPageHeader, AdminPageShell, AdminPanel, AdminStatsGrid } from '@/components/admin/AdminPageShell'
 
 const STATUS_OPTIONS = ['ALL', 'NEW', 'READ', 'REPLIED', 'ARCHIVED']
 const STATUS_COLORS = {
@@ -93,31 +94,42 @@ export default function AdminEnquiriesPage() {
     }
 
     const newCount = enquiries.filter((e) => e.status === 'NEW').length
+    const repliedCount = enquiries.filter((e) => e.status === 'REPLIED').length
+    const archivedCount = enquiries.filter((e) => e.status === 'ARCHIVED').length
 
     return (
-        <div className="w-full">
-            <div className="max-w-6xl mx-auto px-6 py-10 animate-fade-up">
-
-                {/* Header */}
-                <div className="mb-8 flex items-center justify-between bg-white border border-gray-100 rounded-3xl p-8 shadow-[0_4px_20px_rgb(0,0,0,0.03)]">
-                    <div>
-                        <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight flex items-center gap-3">
-                            <HiOutlineMail className="text-primary-500" />
-                            Enquiries
-                            {newCount > 0 && (
-                                <span className="bg-blue-500 text-white text-xs font-black px-2.5 py-1 rounded-full animate-pulse">{newCount} new</span>
-                            )}
-                        </h1>
-                        <p className="text-gray-500 font-medium text-sm mt-2">
-                            All contact form submissions. Click to view full details, update status, and add notes.
-                        </p>
-                    </div>
-                    <button onClick={fetchEnquiries} className="btn-ghost text-sm py-2.5 px-4 flex items-center gap-2">
-                        <HiOutlineRefresh className={loading ? 'animate-spin' : ''} /> Refresh
+        <AdminPageShell>
+            <AdminPageHeader
+                eyebrow="Inbox"
+                title="Review contact enquiries and team follow-up"
+                description="Filter incoming contact submissions, inspect the full message thread, update handling status, and keep internal notes attached to the enquiry."
+                action={
+                    <button
+                        onClick={fetchEnquiries}
+                        className="inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-slate-700 transition-all hover:border-primary-200 hover:text-primary-700"
+                    >
+                        <HiOutlineRefresh className={loading ? 'animate-spin' : ''} />
+                        Refresh
                     </button>
-                </div>
+                }
+                meta={[
+                    { label: 'Visible', value: String(enquiries.length) },
+                    { label: 'New', value: String(newCount) },
+                    { label: 'Replied', value: String(repliedCount) },
+                    { label: 'Archived', value: String(archivedCount) },
+                ]}
+            />
 
-                {/* Filters */}
+            <AdminStatsGrid
+                items={[
+                    { label: 'Inbox Items', value: enquiries.length, icon: HiOutlineMail, accent: 'from-primary-500 to-primary-700', detail: 'Current result set' },
+                    { label: 'New', value: newCount, icon: HiOutlineEye, accent: 'from-sky-500 to-cyan-500', detail: 'Unread enquiries' },
+                    { label: 'Replied', value: repliedCount, icon: HiOutlineChat, accent: 'from-emerald-500 to-teal-500', detail: 'Handled responses' },
+                    { label: 'Archived', value: archivedCount, icon: HiOutlineTrash, accent: 'from-slate-600 to-slate-800', detail: 'Closed conversations' },
+                ]}
+            />
+
+            <AdminPanel title="Filters" description="Narrow the inbox by status or search by sender, email, or subject.">
                 <div className="flex flex-col sm:flex-row gap-3 mb-6">
                     {/* Search */}
                     <div className="relative flex-1">
@@ -146,9 +158,10 @@ export default function AdminEnquiriesPage() {
                         ))}
                     </div>
                 </div>
+            </AdminPanel>
 
-                {/* Table */}
-                <div className="bg-white border border-gray-100 rounded-3xl shadow-[0_4px_20px_rgb(0,0,0,0.03)] overflow-hidden">
+            <AdminPanel title="Enquiry List" description="Open any row to inspect the message, change status, and add notes." padded={false}>
+                <div className="overflow-hidden">
                     {loading ? (
                         <div className="p-20 text-center">
                             <div className="inline-block w-8 h-8 border-3 border-primary-500 border-t-transparent rounded-full animate-spin" />
@@ -214,11 +227,11 @@ export default function AdminEnquiriesPage() {
                         </table>
                     )}
                 </div>
+            </AdminPanel>
 
-                <p className="text-xs text-gray-400 font-medium mt-4 text-right">
-                    Showing {enquiries.length} enquir{enquiries.length === 1 ? 'y' : 'ies'}
-                </p>
-            </div>
+            <p className="text-right text-xs font-medium text-slate-400">
+                Showing {enquiries.length} enquir{enquiries.length === 1 ? 'y' : 'ies'}
+            </p>
 
             {/* Detail Slide-over */}
             {selected && (
@@ -337,6 +350,6 @@ export default function AdminEnquiriesPage() {
                     </div>
                 </div>
             )}
-        </div>
+        </AdminPageShell>
     )
 }

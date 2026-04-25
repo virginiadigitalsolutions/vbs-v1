@@ -48,12 +48,6 @@ const iconMap = {
     HiOutlineCheckCircle,
 }
 
-const defaultHeroStats = [
-    { value: '10K+', label: 'Students Guided' },
-    { value: '50+', label: 'Digital Skills' },
-    { value: '98%', label: 'Satisfaction' },
-]
-
 const defaultAudienceTints = [
     {
         shell: 'bg-[#EAF2FF]',
@@ -88,7 +82,6 @@ const challengeIcons = [HiOutlineEye, HiOutlineClock, HiOutlineScale]
 
 export function HomeHero({ data }) {
     const hasBgImage = !!data.bgImage
-    const stats = data.stats?.length ? data.stats : defaultHeroStats
     const highlights = data.highlights?.length ? data.highlights : []
 
     return (
@@ -118,8 +111,8 @@ export function HomeHero({ data }) {
             )}
 
             <Container className="relative z-10">
-                <div className={`grid items-center gap-12 lg:gap-16 ${hasBgImage ? '' : 'lg:grid-cols-[1.05fr_0.95fr]'}`}>
-                    <div className={`${hasBgImage ? 'mx-auto max-w-5xl text-center' : 'text-center lg:text-left'}`}>
+                <div className={`grid items-center gap-14 lg:gap-20 ${hasBgImage ? '' : 'lg:grid-cols-[minmax(0,1.02fr)_minmax(0,0.98fr)]'}`}>
+                    <div className={`${hasBgImage ? 'mx-auto max-w-5xl text-center' : 'mx-auto max-w-[680px] text-center lg:mx-0 lg:max-w-[720px] lg:text-left'}`}>
                         <Reveal>
                             {data.tag && (
                                 <span className={`mb-6 inline-flex items-center gap-2 rounded-full px-5 py-2 text-sm font-bold backdrop-blur ${hasBgImage ? 'border border-white/20 bg-white/10 text-white' : 'border border-primary-200 bg-primary-50 text-primary-700'}`}>
@@ -128,7 +121,7 @@ export function HomeHero({ data }) {
                                 </span>
                             )}
 
-                            <h1 className={`mb-8 text-4xl font-extrabold leading-[1.04] tracking-tight sm:text-5xl md:text-6xl ${hasBgImage ? 'text-white lg:text-7xl' : 'text-slate-950 lg:text-[4.25rem]'}`}>
+                            <h1 className={`mb-7 text-4xl font-extrabold leading-[1.02] tracking-tight sm:text-5xl md:text-6xl ${hasBgImage ? 'text-white lg:text-7xl' : 'text-slate-950 lg:text-[4rem]'}`}>
                                 {data.heading?.split('|').map((part, i) => (
                                     <span key={i}>
                                         {i > 0 && ' '}
@@ -141,7 +134,7 @@ export function HomeHero({ data }) {
                                 ))}
                             </h1>
 
-                            <p className={`mx-auto mb-10 max-w-[760px] text-lg leading-relaxed sm:text-xl ${hasBgImage ? 'text-slate-200' : 'text-slate-600 lg:mx-0'}`}>
+                            <p className={`mx-auto mb-9 max-w-[760px] text-lg leading-8 sm:text-xl ${hasBgImage ? 'text-slate-200' : 'text-slate-600 lg:mx-0 lg:max-w-[680px]'}`}>
                                 {data.subheading}
                             </p>
 
@@ -167,7 +160,7 @@ export function HomeHero({ data }) {
 
                         {highlights.length > 0 && (
                             <Reveal delay={0.16}>
-                                <div className={`mt-8 flex flex-wrap gap-3 ${hasBgImage ? 'justify-center' : 'justify-center lg:justify-start'}`}>
+                                <div className={`mt-7 flex flex-wrap gap-3 ${hasBgImage ? 'justify-center' : 'justify-center lg:justify-start'}`}>
                                     {highlights.map((item, i) => (
                                         <span
                                             key={i}
@@ -181,30 +174,12 @@ export function HomeHero({ data }) {
                             </Reveal>
                         )}
 
-                        <Reveal delay={0.28}>
-                            <div className={`mt-14 flex flex-wrap gap-5 ${hasBgImage ? 'justify-center' : 'justify-center lg:justify-start'}`}>
-                                {stats.map((stat, i) => (
-                                    <div
-                                        key={i}
-                                        className={`rounded-2xl border px-5 py-4 shadow-[0_10px_30px_rgba(0,0,0,0.08)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(30,58,138,0.12)] ${hasBgImage ? 'border-white/15 bg-white/10 backdrop-blur' : 'border-slate-200 bg-white'}`}
-                                        style={{ animationDelay: `${0.55 + i * 0.14}s` }}
-                                    >
-                                        <div className={`text-2xl font-extrabold md:text-3xl ${hasBgImage ? 'text-white' : 'bg-gradient-to-r from-primary-700 to-teal-500 bg-clip-text text-transparent'}`}>
-                                            {stat.value}
-                                        </div>
-                                        <div className={`mt-1 text-xs font-semibold uppercase tracking-[0.18em] ${hasBgImage ? 'text-slate-300' : 'text-slate-500'}`}>
-                                            {stat.label}
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </Reveal>
                     </div>
 
                     {!hasBgImage && (
                         <div className="w-full">
                             <Reveal delay={0.2} xOffset={40}>
-                                <div className="relative mx-auto max-w-[610px]">
+                                <div className="relative mx-auto max-w-[600px]">
                                     <div className="absolute -inset-5 rounded-[2rem] bg-gradient-to-tr from-primary-300/20 via-transparent to-teal-300/20 blur-3xl" />
                                     <div className="relative overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-[0_22px_60px_rgba(15,23,42,0.12)]">
                                         <div className="absolute inset-x-0 top-0 z-10 flex items-center justify-between border-b border-white/60 bg-white/80 px-5 py-3 backdrop-blur">
@@ -240,15 +215,15 @@ export function HomeHero({ data }) {
 
 export function HomeAudience({ data }) {
     return (
-        <section id="home-audience" className="relative overflow-hidden bg-[#F8FAFC] py-20 md:py-28 lg:py-32">
+        <section id="home-audience" className="relative -mt-8 overflow-hidden bg-[#F8FAFC] pt-2 pb-16 md:-mt-10 md:pt-4 md:pb-20 lg:-mt-12 lg:pt-5 lg:pb-24">
             <GradientOrb className="right-[-8%] top-[10%]" size="h-[20rem] w-[20rem]" colors="from-primary-200/30 to-transparent" />
             <HexGrid className="bottom-10 left-0 h-40 w-48" />
 
             <Container className="relative z-10">
-                <div className={`mb-16 flex flex-col gap-12 ${data.image ? 'lg:flex-row lg:items-center' : 'text-center'}`}>
-                    <div className={data.image ? 'lg:w-3/5' : 'mx-auto max-w-[760px]'}>
+                <div className={`mb-10 flex flex-col gap-6 md:mb-12 md:gap-8 ${data.image ? 'lg:flex-row lg:items-center lg:justify-between' : 'items-center text-center'}`}>
+                    <div className={data.image ? 'lg:w-[58%]' : 'mx-auto max-w-[760px]'}>
                         <Reveal>
-                            <span className="mb-4 inline-flex items-center gap-2 text-sm font-bold uppercase tracking-[0.18em] text-primary-700">
+                            <span className="mb-3 inline-flex items-center gap-2 text-sm font-bold uppercase tracking-[0.18em] text-primary-700">
                                 <span className="h-[2px] w-10 rounded-full bg-gradient-to-r from-primary-500 to-teal-400" />
                                 {data.tag || 'Who We Help'}
                                 <span className="h-[2px] w-10 rounded-full bg-gradient-to-r from-teal-400 to-primary-500" />
@@ -257,7 +232,7 @@ export function HomeAudience({ data }) {
                                 {data.heading}
                             </h2>
                             {data.subheading && (
-                                <p className="mt-5 max-w-[680px] text-lg leading-relaxed text-slate-600">
+                                <p className="mt-3 max-w-[680px] text-lg leading-8 text-slate-600">
                                     {data.subheading}
                                 </p>
                             )}
@@ -265,7 +240,7 @@ export function HomeAudience({ data }) {
                     </div>
 
                     {data.image && (
-                        <div className="lg:w-2/5">
+                        <div className="lg:w-[36%]">
                             <Reveal delay={0.18} xOffset={36}>
                                 <div className="relative mx-auto max-w-[430px] overflow-hidden rounded-[2rem] border border-white/70 bg-white p-3 shadow-[0_16px_40px_rgba(15,23,42,0.1)]">
                                     <div className="relative aspect-square overflow-hidden rounded-[1.35rem]">
@@ -277,7 +252,7 @@ export function HomeAudience({ data }) {
                     )}
                 </div>
 
-                <StaggerChildren className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+                <StaggerChildren className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                     {data.cards?.map((card, i) => {
                         const Icon = iconMap[card.icon] || HiOutlineAcademicCap
                         const tint = defaultAudienceTints[i % defaultAudienceTints.length]
@@ -287,22 +262,24 @@ export function HomeAudience({ data }) {
                             <Child key={i}>
                                 <div className={`group h-full rounded-[1.75rem] ${tint.shell} p-3 shadow-[0_10px_30px_rgba(0,0,0,0.08)] transition-all duration-500 hover:-translate-y-1.5 hover:shadow-[0_18px_42px_rgba(37,99,235,0.14)]`}>
                                     <div className={`flex h-full flex-col overflow-hidden rounded-[1.3rem] border ${tint.border} bg-gradient-to-b ${tint.card}`}>
-                                        <div className="relative h-48 overflow-hidden">
-                                            <Image
-                                                src={card.image || tint.image}
-                                                alt={card.title}
-                                                fill
-                                                sizes="(min-width: 1024px) 390px, (min-width: 768px) 50vw, 92vw"
-                                                className="object-cover transition-transform duration-700 group-hover:scale-105"
-                                            />
-                                            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/20 via-transparent to-white/10" />
+                                        <div className="relative overflow-hidden border-b border-white/70 bg-white/70 px-3 pt-3">
+                                            <div className="relative h-48 overflow-hidden rounded-[1.1rem] md:h-52">
+                                                <Image
+                                                    src={card.image || tint.image}
+                                                    alt={card.title}
+                                                    fill
+                                                    sizes="(min-width: 1024px) 390px, (min-width: 768px) 50vw, 92vw"
+                                                    className="object-cover object-center transition-transform duration-700 group-hover:scale-[1.04]"
+                                                />
+                                                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/18 via-transparent to-white/15" />
+                                            </div>
                                         </div>
-                                        <div className="flex flex-1 flex-col p-7">
-                                            <div className={`mb-5 flex h-12 w-12 items-center justify-center rounded-full ${tint.badge} shadow-sm`}>
+                                        <div className="flex flex-1 flex-col p-6">
+                                            <div className={`mb-4 flex h-12 w-12 items-center justify-center rounded-full ${tint.badge} shadow-sm`}>
                                                 <Icon className="text-xl" />
                                             </div>
-                                            <h3 className="mb-3 text-xl font-bold text-slate-950">{card.title}</h3>
-                                            <div className="space-y-3">
+                                            <h3 className="mb-3 text-xl font-bold leading-snug text-slate-950">{card.title}</h3>
+                                            <div className="space-y-2">
                                                 {lines.map((line, j) => (
                                                     <p key={j} className="flex items-start gap-3 text-sm leading-7 text-slate-600">
                                                         <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary-500" />
@@ -328,12 +305,12 @@ export function HomeAudience({ data }) {
 
 export function HomeChallenge({ data }) {
     return (
-        <section id="home-challenge" className="relative overflow-hidden bg-white py-20 md:py-28 lg:py-32">
+        <section id="home-challenge" className="relative overflow-hidden bg-white py-14 md:py-18 lg:py-20">
             <CircuitLines className="right-0 top-8 h-64 w-64 opacity-10" />
             <FloatingShapes className="inset-0 h-full w-full" />
 
             <Container className="relative z-10">
-                <div className="grid items-center gap-14 lg:grid-cols-[0.95fr_1.05fr]">
+                <div className="grid items-center gap-10 md:gap-12 lg:grid-cols-[minmax(0,0.96fr)_minmax(0,1.04fr)] lg:gap-14">
                     <div>
                         <Reveal>
                             <span className="mb-4 inline-flex items-center gap-2 text-sm font-bold uppercase tracking-[0.18em] text-primary-700">
@@ -346,7 +323,7 @@ export function HomeChallenge({ data }) {
                         </Reveal>
 
                         <Reveal delay={0.12}>
-                            <div className="mt-8 rounded-[2rem] border border-slate-200 bg-gradient-to-br from-[#F5F7FA] to-[#EAF2FF] p-8 shadow-[0_10px_30px_rgba(0,0,0,0.06)] md:p-10">
+                            <div className="mt-6 rounded-[2rem] border border-slate-200 bg-gradient-to-br from-[#F5F7FA] to-[#EAF2FF] p-7 shadow-[0_10px_30px_rgba(0,0,0,0.06)] md:mt-7 md:p-9">
                                 {data.body && (
                                     <div
                                         className="prose prose-slate max-w-none text-base leading-8 text-slate-600"
@@ -355,7 +332,7 @@ export function HomeChallenge({ data }) {
                                 )}
 
                                 {data.points?.length > 0 && (
-                                    <div className="mt-8 space-y-4">
+                                    <div className="mt-7 space-y-3.5">
                                         {data.points.map((point, i) => {
                                             const PointIcon = challengeIcons[i % challengeIcons.length]
                                             return (
@@ -380,7 +357,7 @@ export function HomeChallenge({ data }) {
 
                     <div>
                         <Reveal delay={0.2} xOffset={36}>
-                            <div className="relative mx-auto max-w-[560px]">
+                            <div className="relative mx-auto max-w-[540px]">
                                 <div className="absolute -inset-5 rounded-[2rem] bg-gradient-to-tr from-primary-200/25 via-transparent to-teal-200/20 blur-3xl" />
                                 <div className="relative overflow-hidden rounded-[2rem] border border-slate-200 bg-white p-3 shadow-[0_18px_45px_rgba(15,23,42,0.12)]">
                                     <div className="relative aspect-[4/4.2] overflow-hidden rounded-[1.45rem]">
@@ -409,13 +386,13 @@ export function HomeChallenge({ data }) {
 
 export function HomeFramework({ data }) {
     return (
-        <section id="home-framework" className="relative overflow-hidden bg-[linear-gradient(180deg,#EFF6FF_0%,#F7FBFF_100%)] py-20 md:py-28 lg:py-32">
+        <section id="home-framework" className="relative overflow-hidden bg-[linear-gradient(180deg,#EFF6FF_0%,#F7FBFF_100%)] py-14 md:py-18 lg:py-20">
             <GradientOrb className="left-[-8%] top-[14%]" size="h-[20rem] w-[20rem]" colors="from-primary-200/25 to-transparent" />
             <GradientOrb className="right-[-6%] bottom-[10%]" size="h-[18rem] w-[18rem]" colors="from-teal-200/25 to-transparent" />
             <ModernGrid className="opacity-30" showBeams={false} />
 
             <Container className="relative z-10">
-                <div className="mb-16 text-center">
+                <div className="mb-12 text-center md:mb-14">
                     <Reveal>
                         <span className="mb-4 inline-flex items-center gap-2 text-sm font-bold uppercase tracking-[0.18em] text-primary-700">
                             <span className="h-[2px] w-10 rounded-full bg-gradient-to-r from-primary-500 to-teal-400" />
@@ -426,7 +403,7 @@ export function HomeFramework({ data }) {
                             {data.heading}
                         </h2>
                         {data.subheading && (
-                            <p className="mx-auto mt-5 max-w-[680px] text-lg leading-relaxed text-slate-600">
+                            <p className="mx-auto mt-4 max-w-[700px] text-lg leading-8 text-slate-600">
                                 {data.subheading}
                             </p>
                         )}
@@ -434,7 +411,7 @@ export function HomeFramework({ data }) {
                 </div>
 
                 <div className="hidden lg:block">
-                    <div className="grid grid-cols-3 gap-6">
+                    <div className="grid grid-cols-3 gap-5">
                         {data.cards?.map((card, i) => {
                             const Icon = iconMap[card.icon] || [HiOutlineLightningBolt, HiOutlineBookOpen, HiOutlineTrendingUp][i % 3]
                             const stepLabel = card.stepLabel || `Step ${i + 1}`
@@ -499,7 +476,7 @@ export function HomeFramework({ data }) {
                         return (
                             <Child key={i}>
                                 <Link href={card.href || '#'} className="block overflow-hidden rounded-[1.75rem] border border-white/70 bg-white p-0 shadow-[0_10px_30px_rgba(0,0,0,0.08)] transition-all duration-300 hover:-translate-y-1">
-                                    <div className="relative h-44 overflow-hidden">
+                                    <div className="relative h-40 overflow-hidden">
                                         <Image
                                             src={card.image || '/images/home/hero-career.png'}
                                             alt={card.title}
@@ -512,7 +489,7 @@ export function HomeFramework({ data }) {
                                             {card.stepLabel || `Step ${i + 1}`}
                                         </span>
                                     </div>
-                                    <div className="p-6">
+                                    <div className="p-5">
                                         <div className="mb-4 flex items-center gap-3">
                                             <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary-50 text-primary-700">
                                                 <Icon className="text-xl" />
@@ -540,12 +517,12 @@ export function HomeFramework({ data }) {
 
 export function HomeStandards({ data }) {
     return (
-        <section id="home-standards" className="relative overflow-hidden bg-white py-20 md:py-28 lg:py-32">
+        <section id="home-standards" className="relative overflow-hidden bg-white py-14 md:py-18 lg:py-20">
             <GradientOrb className="right-[-6%] top-[8%]" size="h-[18rem] w-[18rem]" colors="from-primary-200/20 to-transparent" />
             <FloatingShapes className="inset-0 h-full w-full" />
 
             <Container className="relative z-10">
-                <div className="mb-14 text-center">
+                <div className="mb-10 text-center md:mb-12">
                     <Reveal>
                         <span className="mb-4 inline-flex items-center gap-2 text-sm font-bold uppercase tracking-[0.18em] text-primary-700">
                             <span className="h-[2px] w-10 rounded-full bg-gradient-to-r from-primary-500 to-teal-400" />
@@ -559,10 +536,10 @@ export function HomeStandards({ data }) {
                 </div>
 
                 <Reveal delay={0.1}>
-                    <div className="relative mb-14 overflow-hidden rounded-[2rem] bg-gradient-to-r from-[#1E3A8A] via-[#2563EB] to-[#14B8A6] p-8 text-white shadow-[0_18px_48px_rgba(30,58,138,0.28)] md:p-12">
+                    <div className="relative mb-10 overflow-hidden rounded-[2rem] bg-gradient-to-r from-[#1E3A8A] via-[#2563EB] to-[#14B8A6] p-7 text-white shadow-[0_18px_48px_rgba(30,58,138,0.28)] md:mb-12 md:p-10">
                         <div className="absolute -right-8 top-0 h-56 w-56 rounded-full bg-white/10 blur-3xl" />
                         <div className="absolute bottom-0 left-0 h-40 w-40 rounded-full bg-amber-300/10 blur-2xl" />
-                        <div className="relative z-10 flex flex-col gap-6 lg:flex-row lg:items-center">
+                        <div className="relative z-10 flex flex-col gap-5 lg:flex-row lg:items-center">
                             <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border border-white/20 bg-white/10">
                                 <HiOutlineShieldCheck className="text-3xl text-white" />
                             </div>
@@ -578,7 +555,7 @@ export function HomeStandards({ data }) {
                     </div>
                 </Reveal>
 
-                <StaggerChildren className="grid grid-cols-1 gap-7 md:grid-cols-2 lg:grid-cols-3">
+                <StaggerChildren className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                     {data.cards?.map((item, i) => {
                         const Icon = iconMap[item.icon] || HiOutlineCheckCircle
                         return (

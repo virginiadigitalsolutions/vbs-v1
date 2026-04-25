@@ -2,8 +2,20 @@
 
 import { useState, useEffect } from 'react'
 import { showSuccess, showError, showConfirm } from '@/lib/swal'
-import { HiOutlineTrash, HiOutlineClipboardCopy, HiOutlineExternalLink } from 'react-icons/hi'
+import {
+    HiOutlineClipboardCopy,
+    HiOutlineExternalLink,
+    HiOutlinePhotograph,
+    HiOutlineTrash,
+    HiOutlineUpload,
+} from 'react-icons/hi'
 import Image from 'next/image'
+import {
+    AdminPageHeader,
+    AdminPageShell,
+    AdminPanel,
+    AdminStatsGrid,
+} from '@/components/admin/AdminPageShell'
 
 export default function AdminMediaLibrary() {
     const [media, setMedia] = useState([])
@@ -13,8 +25,8 @@ export default function AdminMediaLibrary() {
     const fetchMedia = () => {
         setLoading(true)
         fetch('/api/admin/media')
-            .then(res => res.json())
-            .then(data => {
+            .then((res) => res.json())
+            .then((data) => {
                 if (Array.isArray(data)) setMedia(data)
                 setLoading(false)
             })
@@ -37,11 +49,10 @@ export default function AdminMediaLibrary() {
             return
         }
 
-        if (file.size > 4 * 1024 * 1024) { // 4MB limit for Vercel
-            showError('File is too large. Vercel limited to 4.5MB total request size. Please upload images under 4MB.');
+        if (file.size > 4 * 1024 * 1024) {
+            showError('File is too large. Upload images under 4 MB.')
             return
         }
-
 
         setUploading(true)
 
@@ -56,28 +67,27 @@ export default function AdminMediaLibrary() {
 
             if (!res.ok) throw new Error('Upload failed')
 
-            // Refresh gallery
             fetchMedia()
-            showSuccess('Image uploaded successfully!')
+            showSuccess('Image uploaded successfully.')
         } catch (err) {
             showError(err.message)
         } finally {
             setUploading(false)
-            e.target.value = '' // Reset input
+            e.target.value = ''
         }
     }
 
     const copyToClipboard = (url) => {
         const fullUrl = url.startsWith('http') ? url : window.location.origin + url
         navigator.clipboard.writeText(fullUrl)
-        showSuccess('Image URL copied to clipboard!')
+        showSuccess('Image URL copied to clipboard.')
     }
 
     const handleDelete = async (id, filename) => {
         const confirmed = await showConfirm({
             title: `Delete ${filename}?`,
             text: 'This will permanently remove the file from the database. This cannot be undone.',
-            confirmText: 'Yes, Delete'
+            confirmText: 'Yes, Delete',
         })
 
         if (!confirmed) return
@@ -85,58 +95,82 @@ export default function AdminMediaLibrary() {
         try {
             const res = await fetch(`/api/admin/media/${id}`, { method: 'DELETE' })
             if (!res.ok) throw new Error('Failed to delete')
-            showSuccess('Media deleted successfully')
+            showSuccess('Media deleted successfully.')
             fetchMedia()
         } catch (err) {
             showError(err.message)
         }
     }
 
+    const totalSizeKb = media.reduce((sum, item) => sum + item.sizeBytes, 0) / 1024
+    const latestUpload = media[0]?.createdAt ? new Date(media[0].createdAt).toLocaleDateString() : 'No uploads yet'
+
     return (
-        <div className="w-full">
-            <div className="max-w-6xl mx-auto px-6 py-10 animate-fade-up">
-                <div className="mb-10 flex flex-col md:flex-row md:items-center justify-between text-gray-900 bg-white border border-gray-100 rounded-3xl p-8 shadow-[0_4px_20px_rgb(0,0,0,0.03)] gap-4">
-                    <div>
-                        <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">Global Media Library</h1>
-                        <p className="text-gray-500 font-medium text-sm mt-2">
-                            Upload images to embed in your dynamic CMS pages and Blog Engine.
-                        </p>
-                    </div>
+        <AdminPageShell>
+            <AdminPageHeader
+                eyebrow="Media Library"
+                title="Manage shared image assets for pages and posts"
+                description="Upload approved images once, then reuse them across the CMS, learning hub, and section layouts without duplicate asset hunting."
+                action={
+                    <label
+                        className={`inline-flex cursor-pointer items-center justify-center gap-2 rounded-2xl bg-slate-950 px-5 py-3 text-sm font-bold text-white shadow-[0_12px_30px_rgba(15,23,42,0.16)] transition-all hover:bg-primary-700 ${
+                            uploading ? 'pointer-events-none opacity-50' : ''
+                        }`}
+                    >
+                        <input
+                            type="file"
+                            className="sr-only"
+                            accept="image/*"
+                            onChange={handleFileUpload}
+                            disabled={uploading}
+                        />
+                        <HiOutlineUpload className="text-base" />
+                        {uploading ? 'Uploading...' : 'Upload Image'}
+                    </label>
+                }
+                meta={[
+                    { label: 'Assets', value: String(media.length) },
+                    { label: 'Total Size', value: `${totalSizeKb.toFixed(1)} KB` },
+                    { label: 'Latest Upload', value: latestUpload },
+                    { label: 'Usage', value: 'CMS + Blog' },
+                ]}
+            />
 
-                    <div>
+            <AdminStatsGrid
+                items={[
+                    { label: 'Files', value: media.length, icon: HiOutlinePhotograph, accent: 'from-primary-500 to-primary-700', detail: 'Available assets' },
+                    { label: 'Ready', value: media.length, icon: HiOutlineUpload, accent: 'from-emerald-500 to-teal-500', detail: 'Accessible in admin' },
+                    { label: 'Storage', value: `${totalSizeKb.toFixed(0)} KB`, icon: HiOutlineClipboardCopy, accent: 'from-violet-500 to-fuchsia-500', detail: 'Tracked in database' },
+                    { label: 'Latest', value: latestUpload, icon: HiOutlineExternalLink, accent: 'from-amber-500 to-orange-500', detail: 'Most recent upload' },
+                ]}
+            />
 
-                        <label className={`cursor-pointer inline-flex items-center justify-center btn-primary py-3 px-6 shadow-sm ${uploading ? 'opacity-50 pointer-events-none' : ''}`}>
-                            <input
-                                type="file"
-                                className="sr-only"
-                                accept="image/*"
-                                onChange={handleFileUpload}
-                                disabled={uploading}
-                            />
-                            {uploading ? 'Uploading...' : 'Upload Image'}
-                        </label>
-                    </div>
-                </div>
-
+            <AdminPanel
+                title="Library Assets"
+                description="Hover any asset to copy its URL, open the original file, or remove it from the library."
+            >
                 {loading ? (
-                    <div className="py-20 text-center text-gray-400 font-bold">Loading library...</div>
-                ) : (
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                        {media.length > 0 ? media.map(item => (
-                            <div key={item.id} className="group bg-white border border-gray-100 rounded-3xl overflow-hidden shadow-[0_4px_20px_rgb(0,0,0,0.03)] hover:border-primary-300 hover:shadow-[0_10px_40px_rgba(72,115,174,0.08)] transition-all hover:-translate-y-1 flex flex-col">
-                                <div className="h-40 bg-gray-50 flex items-center justify-center overflow-hidden border-b border-gray-50 relative">
-                                    <Image 
-                                        src={item.url} 
-                                        alt={item.filename} 
-                                        fill 
-                                        sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                                        className="object-cover group-hover:scale-105 transition-transform duration-500" 
+                    <div className="py-20 text-center text-sm font-bold text-slate-400">Loading library...</div>
+                ) : media.length > 0 ? (
+                    <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
+                        {media.map((item) => (
+                            <div
+                                key={item.id}
+                                className="group overflow-hidden rounded-[24px] border border-slate-200/70 bg-slate-50/60 transition-all hover:-translate-y-1 hover:border-primary-200 hover:bg-white hover:shadow-[0_16px_36px_rgba(72,115,174,0.10)]"
+                            >
+                                <div className="relative h-44 overflow-hidden border-b border-slate-100 bg-slate-100">
+                                    <Image
+                                        src={item.url}
+                                        alt={item.filename}
+                                        fill
+                                        sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 25vw"
+                                        className="object-cover transition-transform duration-500 group-hover:scale-105"
                                         unoptimized
                                     />
-                                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center gap-2 px-4 translate-y-2 group-hover:translate-y-0 transition-all duration-300">
+                                    <div className="absolute inset-0 flex items-center justify-center gap-2 bg-slate-950/60 opacity-0 transition-all duration-300 group-hover:opacity-100">
                                         <button
                                             onClick={() => copyToClipboard(item.url)}
-                                            className="w-10 h-10 bg-white text-gray-900 rounded-xl flex items-center justify-center hover:scale-110 transition-transform shadow-lg"
+                                            className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-slate-900 shadow-lg transition-transform hover:scale-110"
                                             title="Copy Link"
                                         >
                                             <HiOutlineClipboardCopy className="text-lg" />
@@ -145,38 +179,39 @@ export default function AdminMediaLibrary() {
                                             href={item.url}
                                             target="_blank"
                                             rel="noreferrer"
-                                            className="w-10 h-10 bg-white text-gray-900 rounded-xl flex items-center justify-center hover:scale-110 transition-transform shadow-lg"
+                                            className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-slate-900 shadow-lg transition-transform hover:scale-110"
                                             title="Open Original"
                                         >
                                             <HiOutlineExternalLink className="text-lg" />
                                         </a>
                                         <button
                                             onClick={() => handleDelete(item.id, item.filename)}
-                                            className="w-10 h-10 bg-red-500 text-white rounded-xl flex items-center justify-center hover:scale-110 transition-transform shadow-lg"
+                                            className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-500 text-white shadow-lg transition-transform hover:scale-110"
                                             title="Delete Image"
                                         >
                                             <HiOutlineTrash className="text-lg" />
                                         </button>
                                     </div>
                                 </div>
-                                <div className="p-4 flex flex-col flex-1">
-                                    <p className="text-xs font-bold text-gray-900 truncate mb-1">{item.filename}</p>
-                                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mt-auto flex items-center justify-between">
+                                <div className="p-4">
+                                    <div className="truncate text-sm font-bold text-slate-950">{item.filename}</div>
+                                    <div className="mt-3 flex items-center justify-between text-[11px] font-bold uppercase tracking-[0.16em] text-slate-400">
                                         <span>{(item.sizeBytes / 1024).toFixed(1)} KB</span>
                                         <span>{new Date(item.createdAt).toLocaleDateString()}</span>
-                                    </p>
+                                    </div>
                                 </div>
                             </div>
-                        )) : (
-                            <div className="col-span-full py-20 bg-white border border-dashed border-gray-200 rounded-3xl text-center flex flex-col items-center justify-center">
-                                <div className="w-16 h-16 rounded-full bg-gray-50 flex items-center justify-center text-2xl mb-4">🖼️</div>
-                                <p className="text-gray-900 font-bold">No media uploaded yet.</p>
-                                <p className="text-gray-500 text-sm mt-1">Upload your first image to use in blog posts.</p>
-                            </div>
-                        )}
+                        ))}
+                    </div>
+                ) : (
+                    <div className="rounded-[24px] border border-dashed border-slate-200 bg-slate-50/80 px-6 py-20 text-center">
+                        <div className="text-base font-black text-slate-950">No media uploaded yet</div>
+                        <p className="mt-2 text-sm font-medium text-slate-500">
+                            Upload your first image to start reusing assets across pages and blog content.
+                        </p>
                     </div>
                 )}
-            </div>
-        </div>
+            </AdminPanel>
+        </AdminPageShell>
     )
 }

@@ -3,14 +3,17 @@ import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import { prisma, queryWithRetry } from '@/lib/db'
 import Link from 'next/link'
 import {
+    HiOutlineArrowRight,
+    HiOutlineChartBar,
+    HiOutlineClock,
     HiOutlineDocumentText,
-    HiOutlineViewGrid,
-    HiOutlinePencilAlt,
+    HiOutlineExternalLink,
     HiOutlineLink,
     HiOutlineMail,
+    HiOutlinePencilAlt,
     HiOutlinePhotograph,
-    HiOutlineExternalLink,
-    HiOutlineArrowRight,
+    HiOutlineSparkles,
+    HiOutlineViewGrid,
 } from 'react-icons/hi'
 
 export default async function AdminDashboard() {
@@ -28,114 +31,248 @@ export default async function AdminDashboard() {
     )
 
     const stats = [
-        { label: 'CMS Pages', value: pageCount, icon: HiOutlineDocumentText, color: 'from-primary-500 to-primary-700', shadow: 'shadow-primary-500/20' },
-        { label: 'Total Sections', value: sectionCount, icon: HiOutlineViewGrid, color: 'from-primary-400 to-primary-600', shadow: 'shadow-primary-400/20' },
-        { label: 'Blog Posts', value: blogCount, icon: HiOutlinePencilAlt, color: 'from-accent-500 to-accent-700', shadow: 'shadow-accent-500/20' },
-        { label: 'Affiliate Links', value: affiliateCount, icon: HiOutlineLink, color: 'from-emerald-500 to-teal-500', shadow: 'shadow-emerald-500/20' },
-        { label: 'Enquiries', value: contactCount, icon: HiOutlineMail, color: 'from-secondary-500 to-secondary-600', shadow: 'shadow-secondary-500/20' },
+        {
+            label: 'CMS Pages',
+            value: pageCount,
+            icon: HiOutlineDocumentText,
+            accent: 'from-primary-500 to-primary-700',
+            detail: 'Core site structure',
+        },
+        {
+            label: 'Sections',
+            value: sectionCount,
+            icon: HiOutlineViewGrid,
+            accent: 'from-sky-500 to-cyan-500',
+            detail: 'Layout building blocks',
+        },
+        {
+            label: 'Blog Posts',
+            value: blogCount,
+            icon: HiOutlinePencilAlt,
+            accent: 'from-emerald-500 to-teal-500',
+            detail: 'Published and draft content',
+        },
+        {
+            label: 'Affiliate Links',
+            value: affiliateCount,
+            icon: HiOutlineLink,
+            accent: 'from-violet-500 to-fuchsia-500',
+            detail: 'Active outbound campaigns',
+        },
+        {
+            label: 'Enquiries',
+            value: contactCount,
+            icon: HiOutlineMail,
+            accent: 'from-amber-500 to-orange-500',
+            detail: 'Inbound messages',
+        },
     ]
 
     const quickActions = [
-        { label: 'Manage All Pages', desc: 'Edit, reorder and toggle content blocks across all your pages.', href: '/admin/pages', icon: HiOutlineDocumentText },
-        { label: 'View Live Site', desc: 'Preview your public-facing website in a new tab.', href: '/', icon: HiOutlineExternalLink, target: '_blank' },
-        { label: 'Media Library', desc: 'Upload and manage images for your CMS and blog.', href: '/admin/media', icon: HiOutlinePhotograph },
-        { label: 'Affiliate Links', desc: 'Manage partnership and referral links.', href: '/admin/affiliates', icon: HiOutlineLink },
+        {
+            label: 'Open Page Manager',
+            desc: 'Edit titles, slugs, publish state, and section counts.',
+            href: '/admin/pages',
+            icon: HiOutlineDocumentText,
+        },
+        {
+            label: 'Upload Media',
+            desc: 'Keep the shared asset library tidy and ready for page layouts.',
+            href: '/admin/media',
+            icon: HiOutlinePhotograph,
+        },
+        {
+            label: 'Review Enquiries',
+            desc: 'Check the newest inbound messages and close the loop faster.',
+            href: '/admin/enquiries',
+            icon: HiOutlineMail,
+        },
+        {
+            label: 'Visit Live Site',
+            desc: 'Open the public experience in a new tab for a visual pass.',
+            href: '/',
+            icon: HiOutlineExternalLink,
+            target: '_blank',
+        },
     ]
 
     return (
-        <div className="w-full">
-            <div className="max-w-6xl mx-auto px-6 py-10 animate-fade-up">
-                {/* Header */}
-                <div className="mb-10 bg-linear-to-b from-secondary-600 to-[#162030] rounded-3xl p-8 relative overflow-hidden">
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-primary-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-                    <div className="absolute bottom-0 left-0 w-48 h-48 bg-accent-400/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
-                    <div className="relative z-10">
-                        <p className="text-primary-400 text-xs font-bold uppercase tracking-widest mb-2">Welcome back</p>
-                        <h1 className="text-3xl font-extrabold text-white tracking-tight">
-                            {session?.user?.name || 'Admin'} 👋
-                        </h1>
-                        <p className="text-gray-400 font-medium text-sm mt-2 max-w-xl leading-relaxed">
-                            Here&apos;s what&apos;s happening with your website. Manage content, track performance, and keep everything running smoothly.
-                        </p>
+        <div className="space-y-6 text-slate-950">
+            <section className="overflow-hidden rounded-[28px] border border-slate-200/70 bg-[linear-gradient(135deg,#0f172a_0%,#132238_42%,#1e3a8a_100%)] p-6 shadow-[0_24px_60px_rgba(15,23,42,0.16)] sm:p-8">
+                <div className="grid gap-8 lg:grid-cols-[1.3fr_0.7fr] lg:items-end">
+                    <div className="relative">
+                        <div className="absolute -left-6 top-0 h-32 w-32 rounded-full bg-white/8 blur-3xl" />
+                        <div className="relative">
+                            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-4 py-2 text-[11px] font-black uppercase tracking-[0.22em] text-blue-100">
+                                <HiOutlineSparkles className="text-sm text-cyan-300" />
+                                Admin Overview
+                            </div>
+                            <h2 className="max-w-3xl text-3xl font-black tracking-tight text-white sm:text-4xl">
+                                Keep content, design, and publishing aligned across the whole VBS site.
+                            </h2>
+                            <p className="mt-4 max-w-2xl text-sm font-medium leading-7 text-slate-200 sm:text-base">
+                                This workspace is now structured around faster editing, clearer navigation, and a steadier publishing flow for the public website.
+                            </p>
+                            <div className="mt-8 flex flex-wrap gap-3">
+                                <Link
+                                    href="/admin/pages"
+                                    className="inline-flex items-center gap-2 rounded-2xl bg-white px-5 py-3 text-sm font-bold text-slate-950 shadow-sm transition-all hover:bg-slate-100"
+                                >
+                                    Manage Content
+                                    <HiOutlineArrowRight className="text-base" />
+                                </Link>
+                                <Link
+                                    href="/admin/sections"
+                                    className="inline-flex items-center gap-2 rounded-2xl border border-white/15 bg-white/10 px-5 py-3 text-sm font-bold text-white transition-all hover:bg-white/15"
+                                >
+                                    Open Layout Builder
+                                </Link>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-2">
+                        {[
+                            { label: 'Signed In', value: session?.user?.name || 'Admin' },
+                            { label: 'Workspace', value: 'Live CMS' },
+                            { label: 'Focus', value: 'Publishing' },
+                            { label: 'Status', value: 'Ready' },
+                        ].map((item) => (
+                            <div key={item.label} className="rounded-3xl border border-white/10 bg-white/10 p-4 backdrop-blur-sm">
+                                <div className="text-[10px] font-black uppercase tracking-[0.22em] text-blue-100/70">{item.label}</div>
+                                <div className="mt-2 text-sm font-bold text-white sm:text-base">{item.value}</div>
+                            </div>
+                        ))}
                     </div>
                 </div>
+            </section>
 
-                {/* Stats Grid */}
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-10">
-                    {stats.map(stat => {
-                        const Icon = stat.icon
-                        return (
-                            <div key={stat.label} className="bg-white border border-gray-100 rounded-3xl p-5 shadow-[0_4px_20px_rgb(0,0,0,0.03)] hover:shadow-[0_10px_40px_rgba(72,115,174,0.08)] hover:-translate-y-1 transition-all duration-300 group">
-                                <div className={`w-10 h-10 rounded-xl bg-linear-to-br ${stat.color} flex items-center justify-center mb-3 shadow-lg ${stat.shadow} group-hover:scale-110 transition-transform`}>
-                                    <Icon className="text-white text-lg" />
-                                </div>
-                                <p className="text-2xl font-black text-gray-900">{stat.value}</p>
-                                <p className="text-xs font-bold text-gray-400 mt-0.5 uppercase tracking-wider">{stat.label}</p>
+            <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-5">
+                {stats.map((stat) => {
+                    const Icon = stat.icon
+                    return (
+                        <div
+                            key={stat.label}
+                            className="rounded-[26px] border border-slate-200/70 bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.05)] transition-all hover:-translate-y-1 hover:shadow-[0_18px_45px_rgba(72,115,174,0.10)]"
+                        >
+                            <div className={`flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br ${stat.accent} text-white shadow-lg`}>
+                                <Icon className="text-xl" />
                             </div>
-                        )
-                    })}
-                </div>
+                            <div className="mt-4 text-3xl font-black tracking-tight text-slate-950">{stat.value}</div>
+                            <div className="mt-1 text-sm font-bold text-slate-800">{stat.label}</div>
+                            <div className="mt-1 text-xs font-medium uppercase tracking-[0.16em] text-slate-400">{stat.detail}</div>
+                        </div>
+                    )
+                })}
+            </section>
 
-                {/* Quick Actions */}
-                <div className="mb-10">
-                    <h2 className="text-lg font-extrabold text-gray-900 mb-4 tracking-tight">Quick Actions</h2>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                        {quickActions.map(action => {
+            <section className="grid grid-cols-1 gap-6 xl:grid-cols-[1.1fr_0.9fr]">
+                <div className="rounded-[28px] border border-slate-200/70 bg-white p-6 shadow-[0_10px_30px_rgba(15,23,42,0.05)] sm:p-7">
+                    <div className="mb-5 flex items-center justify-between gap-4">
+                        <div>
+                            <h3 className="text-xl font-black tracking-tight text-slate-950">Quick Actions</h3>
+                            <p className="mt-1 text-sm font-medium text-slate-500">The fastest way into the work that moves this site every day.</p>
+                        </div>
+                        <div className="hidden rounded-2xl bg-slate-50 px-3 py-2 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 sm:block">
+                            Jump Points
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+                        {quickActions.map((action) => {
                             const Icon = action.icon
                             return (
                                 <Link
                                     key={action.href}
                                     href={action.href}
                                     target={action.target || '_self'}
-                                    className="bg-white border border-gray-100 rounded-3xl p-5 block shadow-[0_4px_20px_rgb(0,0,0,0.03)] group hover:border-primary-200 hover:shadow-[0_10px_40px_rgba(72,115,174,0.08)] hover:-translate-y-1 transition-all duration-300"
+                                    className="group rounded-[24px] border border-slate-200 bg-slate-50/60 p-5 transition-all hover:border-primary-200 hover:bg-white hover:shadow-[0_14px_32px_rgba(72,115,174,0.10)]"
                                 >
-                                    <div className="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center mb-3 group-hover:bg-primary-50 group-hover:scale-110 transition-all">
-                                        <Icon className="text-gray-400 text-lg group-hover:text-primary-600 transition-colors" />
+                                    <div className="flex items-start justify-between gap-4">
+                                        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-slate-700 shadow-sm transition-colors group-hover:text-primary-600">
+                                            <Icon className="text-xl" />
+                                        </div>
+                                        <HiOutlineArrowRight className="mt-2 text-base text-slate-300 transition-all group-hover:translate-x-1 group-hover:text-primary-500" />
                                     </div>
-                                    <div className="text-sm font-bold text-gray-900 group-hover:text-primary-700 transition-colors flex items-center gap-1">
-                                        {action.label}
-                                        <HiOutlineArrowRight className="text-xs opacity-0 group-hover:opacity-100 translate-x-0 group-hover:translate-x-1 transition-all" />
-                                    </div>
-                                    <p className="text-gray-500 text-xs mt-1 font-medium leading-relaxed">{action.desc}</p>
+                                    <div className="mt-5 text-base font-black tracking-tight text-slate-950">{action.label}</div>
+                                    <p className="mt-2 text-sm font-medium leading-7 text-slate-500">{action.desc}</p>
                                 </Link>
                             )
                         })}
                     </div>
                 </div>
 
-                {/* Recent Enquiries */}
-                <div className="bg-white border text-gray-900 border-gray-100 rounded-3xl p-8 shadow-[0_4px_20px_rgb(0,0,0,0.03)]">
-                    <div className="flex items-center justify-between mb-6">
-                        <h2 className="text-lg font-extrabold text-gray-900 tracking-tight flex items-center gap-2">
-                            <HiOutlineMail className="text-xl text-primary-500" />
-                            Recent Enquiries
-                        </h2>
-                        <span className="text-xs font-bold text-gray-400 bg-gray-50 px-3 py-1.5 rounded-lg">Last 5</span>
+                <div className="rounded-[28px] border border-slate-200/70 bg-white p-6 shadow-[0_10px_30px_rgba(15,23,42,0.05)] sm:p-7">
+                    <div className="mb-5 flex items-center justify-between gap-4">
+                        <div>
+                            <h3 className="text-xl font-black tracking-tight text-slate-950">Recent Enquiries</h3>
+                            <p className="mt-1 text-sm font-medium text-slate-500">Latest contact activity coming in from the public website.</p>
+                        </div>
+                        <div className="inline-flex items-center gap-2 rounded-2xl bg-slate-50 px-3 py-2 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+                            <HiOutlineClock className="text-sm" />
+                            Last 5
+                        </div>
                     </div>
 
                     {recentContacts.length === 0 ? (
-                        <p className="text-gray-400 text-sm font-medium text-center py-8">No enquiries yet.</p>
+                        <div className="rounded-[24px] border border-dashed border-slate-200 bg-slate-50/70 px-6 py-14 text-center">
+                            <div className="text-base font-black text-slate-900">No enquiries yet</div>
+                            <p className="mt-2 text-sm font-medium text-slate-500">New contact messages will appear here as soon as they arrive.</p>
+                        </div>
                     ) : (
                         <div className="space-y-3">
-                            {recentContacts.map(c => (
-                                <div key={c.id} className="flex items-start gap-4 bg-white hover:bg-gray-50/80 rounded-2xl p-4 border border-gray-100 hover:border-primary-100 shadow-sm transition-all">
-                                    <div className="w-9 h-9 rounded-lg bg-linear-to-b from-primary-100 to-primary-50 flex items-center justify-center text-primary-600 text-xs font-black uppercase shrink-0">
-                                        {c.name?.[0] || '?'}
+                            {recentContacts.map((contact) => (
+                                <div
+                                    key={contact.id}
+                                    className="flex items-start gap-4 rounded-[22px] border border-slate-200/80 bg-slate-50/70 p-4 transition-all hover:border-primary-200 hover:bg-white"
+                                >
+                                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-primary-500 to-primary-700 text-sm font-black uppercase text-white">
+                                        {contact.name?.[0] || '?'}
                                     </div>
-                                    <div className="flex-1 min-w-0">
-                                        <div className="flex items-center gap-2 mb-0.5">
-                                            <span className="font-bold text-gray-900 text-sm">{c.name}</span>
-                                            <span className="text-[10px] font-bold text-gray-400">{new Date(c.createdAt).toLocaleDateString()}</span>
+                                    <div className="min-w-0 flex-1">
+                                        <div className="flex flex-wrap items-center gap-2">
+                                            <span className="text-sm font-bold text-slate-900">{contact.name}</span>
+                                            <span className="rounded-full bg-white px-2 py-1 text-[10px] font-black uppercase tracking-[0.16em] text-slate-400">
+                                                {new Date(contact.createdAt).toLocaleDateString()}
+                                            </span>
                                         </div>
-                                        <p className="text-xs text-gray-500 font-medium truncate">{c.message}</p>
+                                        <div className="mt-1 text-xs font-bold uppercase tracking-[0.16em] text-primary-600">{contact.email}</div>
+                                        <p className="mt-3 line-clamp-2 text-sm font-medium leading-6 text-slate-500">{contact.message}</p>
                                     </div>
-                                    <span className="text-[10px] font-bold text-gray-400 bg-white border border-gray-200 px-2 py-1 rounded-md shrink-0">{c.email}</span>
                                 </div>
                             ))}
                         </div>
                     )}
                 </div>
-            </div>
+            </section>
+
+            <section className="rounded-[28px] border border-slate-200/70 bg-white p-6 shadow-[0_10px_30px_rgba(15,23,42,0.05)] sm:p-7">
+                <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                    <div>
+                        <h3 className="flex items-center gap-3 text-xl font-black tracking-tight text-slate-950">
+                            <HiOutlineChartBar className="text-2xl text-primary-500" />
+                            Publishing Rhythm
+                        </h3>
+                        <p className="mt-2 max-w-2xl text-sm font-medium leading-7 text-slate-500">
+                            Content structure is healthy when pages, sections, and blog entries stay balanced. Use this workspace to keep the public site current without losing consistency.
+                        </p>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                        <div className="rounded-2xl bg-slate-50 px-4 py-3">
+                            <div className="text-[10px] font-black uppercase tracking-[0.18em] text-slate-400">Pages</div>
+                            <div className="mt-1 text-lg font-black text-slate-950">{pageCount}</div>
+                        </div>
+                        <div className="rounded-2xl bg-slate-50 px-4 py-3">
+                            <div className="text-[10px] font-black uppercase tracking-[0.18em] text-slate-400">Sections</div>
+                            <div className="mt-1 text-lg font-black text-slate-950">{sectionCount}</div>
+                        </div>
+                        <div className="rounded-2xl bg-slate-50 px-4 py-3">
+                            <div className="text-[10px] font-black uppercase tracking-[0.18em] text-slate-400">Posts</div>
+                            <div className="mt-1 text-lg font-black text-slate-950">{blogCount}</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
         </div>
     )
 }

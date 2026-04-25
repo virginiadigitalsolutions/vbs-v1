@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import { HiOutlineArrowRight } from 'react-icons/hi'
 import Image from 'next/image'
+import { AdminPageHeader, AdminPageShell, AdminStatsGrid } from '@/components/admin/AdminPageShell'
 
 const MDEditor = dynamic(() => import('@uiw/react-md-editor'), { ssr: false })
 
@@ -221,17 +222,27 @@ export default function AdminSettingsPage() {
     const inputClass = "w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 outline-none focus:bg-white focus:border-primary-400 focus:ring-4 focus:ring-primary-500/20 shadow-sm focus:shadow-md text-sm font-medium text-gray-900 transition-all"
 
     return (
-        <div className="w-full">
-            <div className="max-w-4xl mx-auto px-6 py-10 animate-fade-up">
-                <div className="mb-10 flex items-center justify-between text-gray-900 bg-white border border-gray-100 rounded-3xl p-8 shadow-[0_4px_20px_rgb(0,0,0,0.03)] relative overflow-hidden">
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-primary-50/50 rounded-bl-full -z-10" />
-                    <div>
-                        <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">Global Configurations</h1>
-                        <p className="text-gray-500 font-medium text-sm mt-2 max-w-xl leading-relaxed">
-                            Manage your core website identity, navigation, footer content, and default SEO parameters. Changes apply globally instantly.
-                        </p>
-                    </div>
-                </div>
+        <AdminPageShell className="max-w-5xl animate-fade-up">
+                <AdminPageHeader
+                    eyebrow="Global Settings"
+                    title="Control brand, navigation, footer, email, and default SEO"
+                    description="These settings shape the shared identity of the public website. Use this page for cross-site updates that affect navigation, metadata, footer copy, and operational email."
+                    meta={[
+                        { label: 'Nav Links', value: String((data.navLinks || []).length) },
+                        { label: 'SMTP', value: 'Configured in panel' },
+                        { label: 'Brand', value: data.siteName || 'Not set' },
+                        { label: 'Mode', value: 'Global' },
+                    ]}
+                />
+
+                <AdminStatsGrid
+                    items={[
+                        { label: 'Navigation Links', value: (data.navLinks || []).length, detail: 'Header menu items', accent: 'from-primary-500 to-primary-700' },
+                        { label: 'Social Profiles', value: Object.values(data.socialLinks || {}).filter(Boolean).length, detail: 'Connected channels', accent: 'from-violet-500 to-fuchsia-500' },
+                        { label: 'Contact Points', value: [data.contactEmail, data.contactPhone].filter(Boolean).length, detail: 'Public support info', accent: 'from-emerald-500 to-teal-500' },
+                        { label: 'SEO Defaults', value: data.seoDefaultTitle ? 1 : 0, detail: 'Fallback metadata', accent: 'from-amber-500 to-orange-500' },
+                    ]}
+                />
 
                 {message.text && (
                     <div className={`mb-8 px-6 py-4 rounded-xl font-bold text-sm shadow-sm flex items-center gap-3 ${message.type === 'success' ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' : 'bg-red-50 text-red-700 border border-red-100'
@@ -407,7 +418,6 @@ export default function AdminSettingsPage() {
                         </button>
                     </div>
                 </form>
-            </div>
-        </div>
+        </AdminPageShell>
     )
 }
