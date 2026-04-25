@@ -21,7 +21,7 @@ export const metadata = {
     metadataBase: new URL(getBaseUrl()),
     manifest: '/manifest.json',
     verification: {
-        google: 'AzeiQxAvLcoj0BoH0lfYdx5U04yEC_XPo_PcltHQhnA',
+        google: 'SGv4z2To9lhb1essbiWa5Jbz-z0sm6pYVMl9vDwhdFk',
     },
     appleWebApp: {
         capable: true,
