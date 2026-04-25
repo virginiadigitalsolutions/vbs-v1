@@ -29,7 +29,7 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }) {
-    const { postSlug } = await params
+    const { slug, postSlug } = await params
     const post = await queryWithRetry(() =>
         prisma.post.findUnique({
             where: { slug: postSlug },
@@ -42,6 +42,7 @@ export async function generateMetadata({ params }) {
     return {
         title: `${post.metaTitle || post.title} | VBS Learning Hub`,
         description: post.metaDesc || post.excerpt || 'Read the full article on VBS Digital.',
+        alternates: { canonical: `/learning-hub/${slug}/${post.slug}` },
     }
 }
 

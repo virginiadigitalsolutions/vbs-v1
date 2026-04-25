@@ -43,6 +43,7 @@ export async function generateMetadata() {
     return {
         title: page?.title || 'VBS Learning Hub',
         description: page?.metaDesc || 'Insights, tutorials, and architectural deep-dives from the VBS engineering team.',
+        alternates: { canonical: '/learning-hub' },
     }
 }
 

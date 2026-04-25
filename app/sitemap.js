@@ -1,10 +1,5 @@
 import { prisma, queryWithRetry } from '@/lib/db'
-
-const getBaseUrl = () => {
-    if (process.env.NEXT_PUBLIC_SITE_URL) return process.env.NEXT_PUBLIC_SITE_URL
-    if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`
-    return 'http://localhost:3000'
-}
+import { getBaseUrl } from '@/lib/seo'
 
 export default async function sitemap() {
     const baseUrl = getBaseUrl()

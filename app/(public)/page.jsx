@@ -17,6 +17,7 @@ export async function generateMetadata() {
         return {
             title: 'Virginia Business Solutions',
             description: 'Clear digital career guidance in India for students and working professionals.',
+            alternates: { canonical: '/' },
         }
     }
 }

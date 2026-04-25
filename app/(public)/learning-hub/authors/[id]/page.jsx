@@ -36,6 +36,7 @@ export async function generateMetadata({ params }) {
     return {
         title: `${author.name} | VBS Learning Hub`,
         description: author.bio || `Read articles by ${author.name} on the VBS Learning Hub.`,
+        alternates: { canonical: `/learning-hub/authors/${id}` },
     }
 }
 

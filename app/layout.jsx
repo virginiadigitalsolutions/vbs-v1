@@ -4,15 +4,10 @@ import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import Providers from '@/app/providers'
 import ClientEnhancements from '@/components/ui/ClientEnhancements'
+import { getBaseUrl } from '@/lib/seo'
 import './globals.css'
 
 const jost = Jost({ subsets: ['latin'], weight: ['400', '500', '600', '700', '800', '900'] })
-
-const getBaseUrl = () => {
-    if (process.env.NEXT_PUBLIC_SITE_URL) return process.env.NEXT_PUBLIC_SITE_URL
-    if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`
-    return 'http://localhost:3000'
-}
 
 export const metadata = {
     title: { default: 'VBS - Job-Ready Digital Skills', template: '%s | VBS' },
