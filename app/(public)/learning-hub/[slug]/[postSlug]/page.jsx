@@ -67,7 +67,7 @@ function renderBlock(block, postTitle) {
         return (
             <div
                 key={block.id}
-                className="prose prose-lg prose-neutral max-w-none break-words prose-headings:font-extrabold prose-p:text-slate-600 prose-a:text-primary-600 prose-strong:text-slate-900 [&_*]:max-w-full [&_*]:break-words"
+                className="article-rich prose prose-neutral max-w-none prose-a:text-primary-600 prose-strong:text-slate-900 [&_*]:max-w-full"
                 dangerouslySetInnerHTML={{ __html: block.data.html }}
             />
         )
@@ -239,6 +239,85 @@ export default async function BlogPostPage({ params }) {
                 }}
             />
             <style>{`
+                .article-rich {
+                    font-family: Georgia, "Times New Roman", serif;
+                    font-size: 1.08rem;
+                    line-height: 1.95;
+                    color: #0f172a;
+                    word-break: normal;
+                    overflow-wrap: break-word;
+                    hyphens: manual;
+                }
+                .article-rich h1,
+                .article-rich h2,
+                .article-rich h3,
+                .article-rich h4,
+                .article-rich h5,
+                .article-rich h6 {
+                    color: #020617;
+                    font-weight: 800;
+                    line-height: 1.2;
+                    letter-spacing: -0.02em;
+                    margin: 1.7em 0 0.7em;
+                    font-family: 'Jost', system-ui, sans-serif;
+                }
+                .article-rich h2 {
+                    font-size: clamp(2.3rem, 4vw, 3.2rem);
+                }
+                .article-rich h3 {
+                    font-size: clamp(1.6rem, 2.6vw, 2.1rem);
+                }
+                .article-rich p,
+                .article-rich li,
+                .article-rich blockquote,
+                .article-rich h1,
+                .article-rich h2,
+                .article-rich h3,
+                .article-rich h4,
+                .article-rich h5,
+                .article-rich h6 {
+                    word-break: normal;
+                    overflow-wrap: break-word;
+                    hyphens: manual;
+                    white-space: normal;
+                }
+                .article-rich p,
+                .article-rich ul,
+                .article-rich ol,
+                .article-rich blockquote,
+                .article-rich pre {
+                    margin-bottom: 1.15em;
+                }
+                .article-rich ul,
+                .article-rich ol {
+                    padding-left: 1.5rem;
+                }
+                .article-rich li::marker {
+                    color: #64748b;
+                }
+                .article-rich p {
+                    color: #1e293b;
+                }
+                .article-rich strong {
+                    color: #0f172a;
+                    font-weight: 700;
+                }
+                .article-rich blockquote {
+                    border-left: 4px solid #8b5cf6;
+                    padding: 0.2rem 0 0.2rem 1.1rem;
+                    color: #334155;
+                    font-style: italic;
+                }
+                .article-rich blockquote p {
+                    color: inherit;
+                }
+                .article-rich a,
+                .article-rich code,
+                .article-rich pre,
+                .article-rich td,
+                .article-rich th {
+                    overflow-wrap: anywhere;
+                }
                 .article-rich .ql-align-center { text-align: center; }
                 .article-rich .ql-align-right { text-align: right; }
                 .article-rich .ql-align-justify { text-align: justify; }
@@ -401,7 +480,7 @@ export default async function BlogPostPage({ params }) {
                                         {blocks.map((block) => renderBlock(block, post.title))}
                                     </div>
                                 ) : (
-                                    <article className="article-rich prose prose-lg prose-neutral max-w-none break-words prose-headings:font-extrabold prose-headings:tracking-tight prose-p:text-slate-600 prose-img:rounded-2xl prose-img:shadow-xl prose-p:leading-relaxed [&_*]:max-w-full [&_*]:break-words">
+                                    <article className="article-rich prose prose-neutral max-w-none prose-img:rounded-2xl prose-img:shadow-xl [&_*]:max-w-full">
                                         <ReactMarkdown>{post.content}</ReactMarkdown>
                                     </article>
                                 )}

@@ -4,8 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
-import { useTheme } from '@/components/ui/ThemeProvider'
-import { HiOutlineMoon, HiOutlineSun, HiChevronDoubleRight } from 'react-icons/hi'
+import { HiChevronDoubleRight } from 'react-icons/hi'
 import { motion, AnimatePresence } from 'framer-motion'
 import clsx from 'clsx'
 
@@ -13,7 +12,6 @@ export default function Navbar({ settings }) {
     const [open, setOpen] = useState(false)
     const [isScrolled, setIsScrolled] = useState(false)
     const pathname = usePathname()
-    const { theme, toggleTheme } = useTheme()
 
     useEffect(() => {
         const handleScroll = () => {
@@ -129,25 +127,6 @@ export default function Navbar({ settings }) {
                     {/* Right side interactions */}
                     <div className="flex items-center gap-2">
 
-                        {/* Dark Mode Toggle */}
-                        <button
-                            onClick={toggleTheme}
-                            className="w-10 h-10 rounded-lg flex items-center justify-center transition-all duration-300 active:scale-95 text-gray-500 hover:bg-primary-50 hover:text-primary-600 dark:text-amber-400 dark:hover:bg-amber-400/10 dark:hover:shadow-[0_0_15px_rgba(251,191,36,0.15)]"
-                            aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-                        >
-                            <AnimatePresence mode="wait" initial={false}>
-                                <motion.div
-                                    key={theme === 'dark' ? 'dark' : 'light'}
-                                    initial={{ y: -20, opacity: 0, rotate: -90 }}
-                                    animate={{ y: 0, opacity: 1, rotate: 0 }}
-                                    exit={{ y: 20, opacity: 0, rotate: 90 }}
-                                    transition={{ duration: 0.2 }}
-                                >
-                                    {theme === 'dark' ? <HiOutlineSun className="text-xl" /> : <HiOutlineMoon className="text-xl" />}
-                                </motion.div>
-                            </AnimatePresence>
-                        </button>
-
                         <Link
                             href="/contact"
                             className="btn-premium py-1.5! px-5! gap-3! text-sm"
@@ -207,29 +186,6 @@ export default function Navbar({ settings }) {
                             )
                         })}
                         <div className="h-px w-full my-2 bg-gray-100 dark:bg-white/10" />
-
-                        <button
-                            onClick={() => {
-                                toggleTheme();
-                                setOpen(false);
-                            }}
-                            className="mx-1 px-4 py-3 rounded-xl font-semibold text-[15px] flex items-center gap-3 transition-all text-gray-600 hover:bg-gray-50 dark:text-amber-400 dark:hover:bg-amber-400/10"
-                        >
-                            <AnimatePresence mode="wait" initial={false}>
-                                <motion.div
-                                    key={theme === 'dark' ? 'dark' : 'light'}
-                                    initial={{ opacity: 0, scale: 0.8 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    exit={{ opacity: 0, scale: 0.8 }}
-                                    transition={{ duration: 0.2 }}
-                                    className="flex items-center gap-3"
-                                >
-                                    {theme === 'dark' ? <HiOutlineSun className="text-lg" /> : <HiOutlineMoon className="text-lg" />}
-                                    {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
-                                </motion.div>
-                            </AnimatePresence>
-                        </button>
-
 
                         <Link
                             href="/contact"
