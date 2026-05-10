@@ -125,7 +125,7 @@ const defaultLearningHubHero = {
     featuredCtaText: 'Read article',
 }
 
-export function LearningHubHero({ data, featuredPost, categoryFilter, searchQuery, posts = [], categories = [] }) {
+export function LearningHubHero({ data, featuredPost, categoryFilter, selectedCategory, searchQuery, posts = [], categories = [] }) {
     const hero = { ...defaultLearningHubHero, ...(data || {}) }
     const totalPosts = posts.length
     const totalCategories = categories.length
@@ -174,6 +174,14 @@ export function LearningHubHero({ data, featuredPost, categoryFilter, searchQuer
                             <p className={`mt-5 max-w-3xl text-base font-medium leading-8 md:text-lg ${hasBgImage ? 'text-white/80' : 'text-slate-600'} ${align === 'center' ? 'mx-auto' : align === 'right' ? 'ml-auto' : ''}`}>
                                 {hero.subheading}
                             </p>
+                            {selectedCategory && (
+                                <div className={`mt-5 flex ${align === 'center' ? 'justify-center' : align === 'right' ? 'justify-end' : 'justify-start'}`}>
+                                    <span className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-extrabold uppercase tracking-[0.18em] ${hasBgImage ? 'border-white/20 bg-white/10 text-white' : 'border-primary-100 bg-primary-50 text-primary-700'}`}>
+                                        <span className={`h-2 w-2 rounded-full ${hasBgImage ? 'bg-white' : 'bg-primary-600'}`} />
+                                        {selectedCategory.name}
+                                    </span>
+                                </div>
+                            )}
 
                             <div className={`mt-8 flex flex-wrap gap-4 ${align === 'center' ? 'justify-center' : align === 'right' ? 'justify-end' : 'justify-start'}`}>
                                 <div className={`rounded-[1.5rem] border px-5 py-4 ${hasBgImage ? 'border-white/10 bg-white/5' : 'border-slate-100 bg-slate-50/80'}`}>
@@ -214,7 +222,7 @@ export function LearningHubHero({ data, featuredPost, categoryFilter, searchQuer
                                 {categories.slice(0, 4).map((cat) => (
                                     <Link
                                         key={cat.id}
-                                        href={`/learning-hub?category=${cat.id}`}
+                                        href={`/learning-hub/${cat.slug}`}
                                         className={`rounded-full border px-3 py-2 text-xs font-bold transition-colors ${
                                             hasBgImage 
                                             ? 'border-white/10 bg-white/5 text-white hover:bg-white/10 hover:border-white/20' 
@@ -246,7 +254,7 @@ const defaultLearningHubFeed = {
     clearFiltersText: 'Clear Filters',
 }
 
-export function LearningHubFeed({ data, visiblePosts = [], categories = [], categoryFilter, searchQuery }) {
+export function LearningHubFeed({ data, visiblePosts = [], categories = [], categoryFilter, selectedCategory, searchQuery }) {
     const copy = { ...defaultLearningHubFeed, ...(data || {}) }
     const totalPosts = categories.reduce((acc, cat) => acc + (cat?._count?.posts || 0), 0)
 
@@ -255,6 +263,22 @@ export function LearningHubFeed({ data, visiblePosts = [], categories = [], cate
             <Container className="max-w-[1536px]">
                 <div className="grid grid-cols-1 gap-12 xl:grid-cols-12 items-start">
                     <div className="xl:col-span-9 space-y-8">
+                        {(selectedCategory || searchQuery) && (
+                            <div className="flex flex-wrap items-center gap-3 rounded-[1.6rem] border border-white/80 bg-white px-5 py-4 shadow-[0_12px_36px_rgba(15,23,42,0.06)]">
+                                <span className="text-xs font-extrabold uppercase tracking-[0.18em] text-slate-400">Showing</span>
+                                {selectedCategory && (
+                                    <span className="rounded-full bg-primary-50 px-3 py-1.5 text-sm font-bold text-primary-700">
+                                        {selectedCategory.name}
+                                    </span>
+                                )}
+                                {searchQuery && (
+                                    <span className="rounded-full bg-slate-100 px-3 py-1.5 text-sm font-bold text-slate-700">
+                                        Search: {searchQuery}
+                                    </span>
+                                )}
+                            </div>
+                        )}
+
                         <StaggerChildren className="grid grid-cols-1 gap-8 md:grid-cols-2 xl:grid-cols-3">
                             {visiblePosts.length > 0 ? visiblePosts.map((post) => (
                                 <Child key={post.id}>
@@ -353,7 +377,7 @@ export function LearningHubFeed({ data, visiblePosts = [], categories = [], cate
                                         </span>
                                     </Link>
                                     {categories.map((cat) => (
-                                        <Link href={`/learning-hub?category=${cat.id}${searchQuery ? `&q=${encodeURIComponent(searchQuery)}` : ''}`} key={cat.id} scroll={false} className={`group flex items-center justify-between rounded-2xl border p-3 transition-colors ${categoryFilter === cat.id ? 'border-primary-100 bg-primary-50 pointer-events-none' : 'border-transparent hover:border-gray-100 hover:bg-gray-50'}`}>
+                                        <Link href={`/learning-hub/${cat.slug}${searchQuery ? `?q=${encodeURIComponent(searchQuery)}` : ''}`} key={cat.id} scroll={false} className={`group flex items-center justify-between rounded-2xl border p-3 transition-colors ${categoryFilter === cat.id ? 'border-primary-100 bg-primary-50 pointer-events-none' : 'border-transparent hover:border-gray-100 hover:bg-gray-50'}`}>
                                             <span className={`text-sm font-bold transition-colors ${categoryFilter === cat.id ? 'text-primary-700' : 'text-gray-700 group-hover:text-primary-600'}`}>{cat.name}</span>
                                             <span className={`rounded-full px-2 py-1 text-xs font-bold transition-colors ${categoryFilter === cat.id ? 'bg-primary-100 text-primary-700' : 'bg-gray-100 text-gray-400 group-hover:bg-primary-100 group-hover:text-primary-600'}`}>{cat._count.posts}</span>
                                         </Link>
