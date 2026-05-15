@@ -51,12 +51,17 @@ const slugify = (text) => text?.toLowerCase().replace(/[^a-z0-9]+/g, '-').replac
 function renderBlock(block, postTitle) {
     if (block.type === 'header') {
         const Tag = `h${block.data.level}`
+        const sizeClass = {
+            2: 'text-[1.45rem] md:text-[1.65rem]',
+            3: 'text-[1.25rem] md:text-[1.4rem]',
+            4: 'text-[1.1rem] md:text-[1.2rem]',
+        }[block.data.level] || 'text-[1.2rem] md:text-[1.35rem]'
+
         return (
             <Tag
                 key={block.id}
                 id={slugify(block.data.text)}
-                className="mt-12 mb-6 scroll-mt-32 font-extrabold tracking-tight text-slate-950"
-                style={{ fontSize: block.data.level === 2 ? '2rem' : block.data.level === 3 ? '1.5rem' : '1.25rem' }}
+                className={`mt-12 mb-6 scroll-mt-32 font-extrabold leading-[1.14] tracking-normal text-slate-950 ${sizeClass}`}
             >
                 {block.data.text}
             </Tag>
@@ -257,15 +262,23 @@ export default async function BlogPostPage({ params }) {
                     color: #020617;
                     font-weight: 800;
                     line-height: 1.2;
-                    letter-spacing: -0.02em;
+                    letter-spacing: 0;
                     margin: 1.7em 0 0.7em;
                     font-family: 'Jost', system-ui, sans-serif;
                 }
                 .article-rich h2 {
-                    font-size: clamp(2.3rem, 4vw, 3.2rem);
+                    font-size: 1.65rem;
                 }
                 .article-rich h3 {
-                    font-size: clamp(1.6rem, 2.6vw, 2.1rem);
+                    font-size: 1.4rem;
+                }
+                @media (max-width: 767px) {
+                    .article-rich h2 {
+                        font-size: 1.45rem;
+                    }
+                    .article-rich h3 {
+                        font-size: 1.25rem;
+                    }
                 }
                 .article-rich p,
                 .article-rich li,
