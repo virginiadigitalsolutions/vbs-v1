@@ -2,7 +2,6 @@ import { withAuth } from "next-auth/middleware"
 import { NextResponse } from "next/server";
 
 const exactGoneUrls = new Set([
-  '/blog',
   '/blogs/tag/why-is-seo-important-in-digital-marketing/',
   '/blogs/seo-strategy/',
   '/blogs/what-is-an-seo-audit-why-is-it-important-for-your-website/',
@@ -36,6 +35,11 @@ const authMiddleware = withAuth({
 export default function middleware(req, event) {
   const path = req.nextUrl.pathname;
   
+  // /blog redirects to /learning-hub, while blog listing and /blogs pages remain Gone
+  if (path === '/blog' || path === '/blog/') {
+    return NextResponse.redirect(new URL('/learning-hub', req.url), 301);
+  }
+
   // 410 Gone logic
   const pathWithSlash = path.endsWith('/') ? path : `${path}/`;
   const pathWithoutSlash = path.endsWith('/') ? path.slice(0, -1) : path;
