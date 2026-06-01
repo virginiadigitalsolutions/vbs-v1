@@ -3,11 +3,13 @@
  * Usage: <JsonLd type="Organization" /> or <JsonLd type="Article" data={{...}} />
  */
 
-const getBaseUrl = () => {
-    if (process.env.NEXT_PUBLIC_SITE_URL) return process.env.NEXT_PUBLIC_SITE_URL
-    if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`
-    return 'http://localhost:3000'
-}
+import { getBaseUrl } from '@/lib/seo'
+
+const DEFAULT_SOCIAL_LINKS = [
+    'https://www.linkedin.com/company/virginia-business-solutions',
+    'https://www.instagram.com/yourvbshandle',
+    'https://www.youtube.com/@yourvbschannel',
+]
 
 export default function JsonLd({ type = 'Organization', data = {} }) {
     const baseUrl = getBaseUrl()
@@ -20,13 +22,25 @@ export default function JsonLd({ type = 'Organization', data = {} }) {
                 '@type': 'Organization',
                 name: 'Virginia Business Solutions',
                 url: baseUrl,
-                description: 'Clear digital career guidance in India for students and working professionals.',
-                sameAs: data.socialLinks || [],
+                logo: `${baseUrl}/logo.png`,
+                description:
+                    'Digital career guidance platform helping students, English graduates, and aspiring creators discover practical digital career paths in content writing, video creation, and the creator economy.',
+                foundingDate: '2025',
+                areaServed: 'IN',
+                knowsAbout: [
+                    'Digital Career Guidance',
+                    'Content Writing Careers',
+                    'Video Creator Careers',
+                    'Creator Economy',
+                    'AI Tools for Beginners',
+                    'Freelance Career Development',
+                ],
                 contactPoint: {
                     '@type': 'ContactPoint',
                     contactType: 'customer service',
-                    email: data.email || 'info@virginiabusinesssolutions.com',
+                    email: 'info@virginiabusinesssolutions.in',
                 },
+                sameAs: DEFAULT_SOCIAL_LINKS,
             }
             break
 
@@ -38,7 +52,10 @@ export default function JsonLd({ type = 'Organization', data = {} }) {
                 url: baseUrl,
                 potentialAction: {
                     '@type': 'SearchAction',
-                    target: `${baseUrl}/search?q={search_term_string}`,
+                    target: {
+                        '@type': 'EntryPoint',
+                        urlTemplate: `${baseUrl}/?s={search_term_string}`,
+                    },
                     'query-input': 'required name=search_term_string',
                 },
             }
