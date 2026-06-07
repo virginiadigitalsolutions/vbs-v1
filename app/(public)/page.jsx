@@ -1,5 +1,6 @@
 import SectionRenderer from '@/components/SectionRenderer'
 import AffiliateLinksSection from '@/components/AffiliateLinksSection'
+import JsonLd from '@/components/ui/JsonLd'
 import { prisma, queryWithRetry } from '@/lib/db'
 import { notFound } from 'next/navigation'
 
@@ -42,8 +43,13 @@ export default async function HomePage() {
 
     if (!page) notFound()
 
+    const faqItems = page.sections
+        .find((section) => ['home_faq', 'generic_faq'].includes(section.data?.layout))
+        ?.data?.items || []
+
     return (
         <main className="min-h-screen selection:bg-primary-500/30">
+            {faqItems.length > 0 && <JsonLd type="FAQPage" data={{ items: faqItems }} />}
             <SectionRenderer sections={page.sections} />
             <AffiliateLinksSection title="Recommended Resources" />
         </main>

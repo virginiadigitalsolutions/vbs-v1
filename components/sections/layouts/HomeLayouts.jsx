@@ -30,7 +30,9 @@ import {
     HiOutlineScale,
     HiOutlineCheckCircle,
     HiOutlineSparkles,
+    HiOutlineQuestionMarkCircle,
     HiChevronDoubleRight,
+    HiChevronDown,
 } from 'react-icons/hi'
 
 const iconMap = {
@@ -578,6 +580,67 @@ export function HomeStandards({ data }) {
                             </Child>
                         )
                     })}
+                </StaggerChildren>
+            </Container>
+        </section>
+    )
+}
+
+export function HomeFaq({ data }) {
+    const items = data.items || []
+
+    if (!items.length) return null
+
+    return (
+        <section id="home-faq" className="relative overflow-hidden bg-[#F8FAFC] py-14 md:py-18 lg:py-20">
+            <ModernGrid className="opacity-25" showBeams={false} />
+
+            <Container className="relative z-10">
+                <div className="mx-auto mb-10 max-w-[760px] text-center md:mb-12">
+                    <Reveal>
+                        {data.tag && (
+                            <span className="mb-4 inline-flex items-center gap-2 text-sm font-bold uppercase tracking-[0.18em] text-primary-700">
+                                <span className="h-[2px] w-10 rounded-full bg-gradient-to-r from-primary-500 to-teal-400" />
+                                {data.tag}
+                                <span className="h-[2px] w-10 rounded-full bg-gradient-to-r from-teal-400 to-primary-500" />
+                            </span>
+                        )}
+                        <h2 className="text-3xl font-extrabold leading-tight text-slate-950 sm:text-4xl md:text-[3rem]">
+                            {data.heading || 'Frequently Asked Questions'}
+                        </h2>
+                        {data.subheading && (
+                            <p className="mx-auto mt-4 max-w-[680px] text-lg leading-8 text-slate-600">
+                                {data.subheading}
+                            </p>
+                        )}
+                    </Reveal>
+                </div>
+
+                <StaggerChildren className="mx-auto grid max-w-[980px] grid-cols-1 gap-4">
+                    {items.map((item, i) => (
+                        <Child key={i}>
+                            <details className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_10px_28px_rgba(15,23,42,0.06)] transition-all duration-300 open:border-primary-200 open:shadow-[0_16px_38px_rgba(37,99,235,0.12)]">
+                                <summary className="flex cursor-pointer list-none items-start gap-4 px-5 py-5 text-left md:px-7 md:py-6">
+                                    <span className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-primary-50 text-primary-700">
+                                        <HiOutlineQuestionMarkCircle className="text-xl" />
+                                    </span>
+                                    <span className="min-w-0 flex-1">
+                                        <span className="block text-base font-extrabold leading-7 text-slate-950 md:text-lg">
+                                            {i + 1}. {item.question}
+                                        </span>
+                                    </span>
+                                    <span className="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-slate-100 text-slate-600 transition-transform duration-300 group-open:rotate-180 group-open:bg-primary-100 group-open:text-primary-700">
+                                        <HiChevronDown className="text-lg" />
+                                    </span>
+                                </summary>
+                                <div className="px-5 pb-6 pl-[4.75rem] pr-7 md:pl-[5.75rem]">
+                                    <p className="text-base leading-8 text-slate-600">
+                                        {item.answer}
+                                    </p>
+                                </div>
+                            </details>
+                        </Child>
+                    ))}
                 </StaggerChildren>
             </Container>
         </section>

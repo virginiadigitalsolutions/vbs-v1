@@ -7,7 +7,7 @@ import TextSection from '@/components/sections/TextSection'
 import { DSHero, DSSkillClusters, DSEvaluation, DSAIImpact, DSMistakes, DSWhereNext } from './sections/layouts/DigitalSkillsLayouts'
 import { CoursesHero, CoursesIntro, CoursesStructure, CoursesProgression, CoursesFreePaid, CoursesEvalAndMistakes, CoursesConnecting } from './sections/layouts/CoursesLayouts'
 import { CareerHero, CareerIntro, CareerWhyClarity, CareerProgression, CareerGrowth, CareerAIAndMistakes, CareerAligning } from './sections/layouts/CareerLayouts'
-import { HomeHero, HomeAudience, HomeChallenge, HomeFramework, HomeStandards } from './sections/layouts/HomeLayouts'
+import { HomeHero, HomeAudience, HomeChallenge, HomeFramework, HomeStandards, HomeFaq } from './sections/layouts/HomeLayouts'
 import { AboutHero, AboutIntro, AboutAudience, AboutApproach, AboutDifferent, AboutCTA } from './sections/layouts/AboutLayouts'
 import { ContactHero, ContactFormSection } from './sections/layouts/ContactLayouts'
 import { BlogHero, LearningHubFeed, LearningHubHero } from './sections/layouts/BlogLayouts'
@@ -19,6 +19,8 @@ const LAYOUT_MAP = {
     'home_challenge': HomeChallenge,
     'home_framework': HomeFramework,
     'home_standards': HomeStandards,
+    'home_faq': HomeFaq,
+    'generic_faq': HomeFaq,
 
     // Digital Skills
     'ds_hero': DSHero,

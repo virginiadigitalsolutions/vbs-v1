@@ -98,6 +98,21 @@ export default function JsonLd({ type = 'Organization', data = {} }) {
             }
             break
 
+        case 'FAQPage':
+            schema = {
+                '@context': 'https://schema.org',
+                '@type': 'FAQPage',
+                mainEntity: (data.items || []).map((item) => ({
+                    '@type': 'Question',
+                    name: item.question,
+                    acceptedAnswer: {
+                        '@type': 'Answer',
+                        text: item.answer,
+                    },
+                })),
+            }
+            break
+
         default:
             return null
     }

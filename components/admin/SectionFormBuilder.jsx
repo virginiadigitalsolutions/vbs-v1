@@ -14,6 +14,7 @@ export default function SectionFormBuilder({ section, onSave, onCancel }) {
     const isHomeChallenge = layout === 'home_challenge'
     const isHomeFramework = layout === 'home_framework'
     const isHomeStandards = layout === 'home_standards'
+    const isFaqLayout = layout === 'home_faq' || layout === 'generic_faq'
     const isLearningHubHero = layout === 'learning_hub_hero'
     const isLearningHubFeed = layout === 'learning_hub_feed'
 
@@ -235,19 +236,21 @@ export default function SectionFormBuilder({ section, onSave, onCancel }) {
                     </select>
                 </div>
             </div>
-            <div data-color-mode="light">
-                <label className="block text-xs font-bold text-gray-500 mb-1.5 ml-1">Body Text (Markdown & HTML supported)</label>
-                <div className="border border-gray-200 rounded-xl overflow-hidden shadow-sm">
-                    <MDEditor
-                        value={data.body || ''}
-                        onChange={val => setData({ ...data, body: val || '' })}
-                        height={400}
-                        preview="edit"
-                        hideToolbar={false}
-                        className="border-0! shadow-none! ring-0 w-full"
-                    />
+            {!isFaqLayout && (
+                <div data-color-mode="light">
+                    <label className="block text-xs font-bold text-gray-500 mb-1.5 ml-1">Body Text (Markdown & HTML supported)</label>
+                    <div className="border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+                        <MDEditor
+                            value={data.body || ''}
+                            onChange={val => setData({ ...data, body: val || '' })}
+                            height={400}
+                            preview="edit"
+                            hideToolbar={false}
+                            className="border-0! shadow-none! ring-0 w-full"
+                        />
+                    </div>
                 </div>
-            </div>
+            )}
 
             {isHomeChallenge && (
                 <div className="bg-white border text-gray-900 border-gray-200 rounded-2xl p-5 shadow-sm">
@@ -278,7 +281,46 @@ export default function SectionFormBuilder({ section, onSave, onCancel }) {
                 </div>
             )}
 
-            <div className="bg-white border text-gray-900 border-gray-200 rounded-2xl p-5 shadow-sm">
+            {isFaqLayout && (
+                <div className="bg-white border text-gray-900 border-gray-200 rounded-2xl p-5 shadow-sm">
+                    <div className="flex items-center justify-between mb-4 pb-4 border-b border-gray-100">
+                        <div>
+                            <label className="block text-sm font-bold text-gray-900">FAQ Questions</label>
+                            <p className="text-xs font-medium text-gray-500 mt-0.5">These items appear on the page and generate the FAQ schema.</p>
+                        </div>
+                        <button type="button" onClick={() => setData({ ...data, items: [...(data.items || []), { question: '', answer: '' }] })} className="text-xs bg-indigo-50 text-indigo-700 font-bold px-4 py-2 border-indigo-200 hover:bg-indigo-100 border rounded-xl shadow-sm transition-colors">+ Add FAQ</button>
+                    </div>
+
+                    <div className="space-y-4">
+                        {(data.items || []).map((item, idx) => (
+                            <div key={idx} className="rounded-2xl border border-gray-100 bg-gray-50 p-4 shadow-sm group">
+                                <div className="mb-3 flex items-center justify-between">
+                                    <div className="text-xs font-bold uppercase tracking-wider text-gray-400">Question {idx + 1}</div>
+                                    <button type="button" onClick={() => setData({ ...data, items: (data.items || []).filter((_, i) => i !== idx) })} className="h-8 w-8 rounded-lg border border-gray-200 bg-white text-gray-400 opacity-60 shadow-sm transition-colors hover:border-red-200 hover:bg-red-50 hover:text-red-600 group-hover:opacity-100">x</button>
+                                </div>
+                                <div className="space-y-3">
+                                    <input type="text" value={item.question || ''} onChange={e => {
+                                        const items = [...(data.items || [])]
+                                        items[idx] = { ...items[idx], question: e.target.value }
+                                        setData({ ...data, items })
+                                    }} className="w-full bg-white border border-gray-200 rounded-xl px-4 py-2.5 outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 text-sm font-bold text-gray-900 transition-all" placeholder="Question" />
+                                    <textarea value={item.answer || ''} onChange={e => {
+                                        const items = [...(data.items || [])]
+                                        items[idx] = { ...items[idx], answer: e.target.value }
+                                        setData({ ...data, items })
+                                    }} rows={4} className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 text-sm font-medium text-gray-900 resize-y transition-all" placeholder="Answer" />
+                                </div>
+                            </div>
+                        ))}
+                        {(!data.items || data.items.length === 0) && (
+                            <div className="text-center py-4 text-xs font-bold text-gray-400">No FAQ items configured.</div>
+                        )}
+                    </div>
+                </div>
+            )}
+
+            {!isFaqLayout && (
+                <div className="bg-white border text-gray-900 border-gray-200 rounded-2xl p-5 shadow-sm">
                 <div className="flex items-center justify-between mb-4 pb-4 border-b border-gray-100">
                     <div>
                         <label className="block text-sm font-bold text-gray-900">Feature Checklist</label>
@@ -305,7 +347,8 @@ export default function SectionFormBuilder({ section, onSave, onCancel }) {
                         <div className="text-center py-4 text-xs font-bold text-gray-400">No checklist items.</div>
                     )}
                 </div>
-            </div>
+                </div>
+            )}
         </div>
     )
 
