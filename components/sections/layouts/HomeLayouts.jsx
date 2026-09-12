@@ -93,10 +93,16 @@ export function HomeHero({ data }) {
         >
             {hasBgImage && (
                 <>
-                    <div
-                        className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
-                        style={{ backgroundImage: `url(${data.bgImage})` }}
-                    />
+                    <div className="absolute inset-0 z-0 overflow-hidden">
+                        <Image
+                            src={data.bgImage}
+                            alt=""
+                            fill
+                            priority
+                            sizes="100vw"
+                            className="object-cover object-center"
+                        />
+                    </div>
                     <div className="absolute inset-0 z-0 bg-[linear-gradient(120deg,rgba(15,23,42,0.88),rgba(30,58,138,0.72),rgba(20,184,166,0.38))]" />
                 </>
             )}
