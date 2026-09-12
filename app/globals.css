@@ -1,7 +1,32 @@
-@import url('https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700;800;900&display=swap');
 @import "tailwindcss";
 
+
 @variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* Beam animations — replaces framer-motion infinite loops in SectionVectors.
+   Runs on the GPU compositor thread: zero JS, zero TBT impact. */
+@keyframes beam-x {
+    0%   { transform: translateX(-100%); opacity: 0; }
+    10%  { opacity: 1; }
+    90%  { opacity: 1; }
+    100% { transform: translateX(100%); opacity: 0; }
+}
+@keyframes beam-y {
+    0%   { transform: translateY(-100%); opacity: 0; }
+    10%  { opacity: 1; }
+    90%  { opacity: 1; }
+    100% { transform: translateY(100%); opacity: 0; }
+}
+.animate-beam-x { animation: beam-x 8s linear infinite; }
+.animate-beam-y { animation: beam-y 12s linear infinite; }
+
+/* Glass shape slow spin — replaces framer-motion rotate in GlassShapes */
+@keyframes spin-very-slow { to { transform: rotate(360deg) scale(1); } }
+@keyframes spin-very-slow-reverse { to { transform: rotate(-360deg) scale(1); } }
+.animate-spin-very-slow { animation: spin-very-slow 25s linear infinite; }
+.animate-spin-very-slow-reverse { animation: spin-very-slow-reverse 30s linear infinite; }
+
+
 
 
 :root {

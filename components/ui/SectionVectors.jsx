@@ -1,7 +1,3 @@
-'use client'
-
-import { motion } from 'framer-motion'
-
 /* ─── Reusable SVG Vector Decorations for Pages ───────────────────
    Animated SVG shapes that add visual depth between sections.
    Import and place these between or inside layout sections.
@@ -23,21 +19,11 @@ export function ModernGrid({ className = '', showBeams = true }) {
     return (
         <div className={`absolute inset-0 pointer-events-none opacity-[0.03] dark:opacity-[0.05] ${className}`}>
             <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
-            
+            {/* Pure CSS beam animations — zero JS main-thread cost (no framer-motion) */}
             {showBeams && (
                 <>
-                    <motion.div 
-                        initial={{ x: '-100%', opacity: 0 }}
-                        animate={{ x: '100%', opacity: [0, 1, 0] }}
-                        transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-                        className="absolute top-[20%] left-0 w-full h-px bg-linear-to-r from-transparent via-primary-500 to-transparent"
-                    />
-                    <motion.div 
-                        initial={{ y: '-100%', opacity: 0 }}
-                        animate={{ y: '100%', opacity: [0, 1, 0] }}
-                        transition={{ duration: 12, repeat: Infinity, ease: "linear", delay: 2 }}
-                        className="absolute top-0 left-[30%] w-px h-full bg-linear-to-b from-transparent via-accent-300 to-transparent"
-                    />
+                    <div className="absolute top-[20%] left-0 w-full h-px bg-linear-to-r from-transparent via-primary-500 to-transparent animate-beam-x opacity-0" />
+                    <div className="absolute top-0 left-[30%] w-px h-full bg-linear-to-b from-transparent via-accent-300 to-transparent animate-beam-y opacity-0 [animation-delay:2s]" />
                 </>
             )}
         </div>
@@ -59,22 +45,9 @@ export function DotsGrid({ className = '', color = 'text-primary-300 dark:text-p
 export function GlassShapes({ className = '' }) {
     return (
         <div className={`absolute inset-0 pointer-events-none overflow-hidden ${className}`}>
-            <motion.div 
-                animate={{ 
-                    rotate: [0, 90, 180, 270, 360],
-                    scale: [1, 1.1, 1, 0.9, 1]
-                }}
-                transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-                className="absolute top-[10%] right-[10%] w-96 h-96 border border-primary-500/10 dark:border-primary-400/5 rounded-[40px] rotate-12 backdrop-blur-[2px]"
-            />
-            <motion.div 
-                animate={{ 
-                    rotate: [360, 270, 180, 90, 0],
-                    scale: [1, 0.9, 1, 1.1, 1]
-                }}
-                transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-                className="absolute bottom-[20%] left-[5%] w-64 h-64 border border-accent-500/10 dark:border-accent-400/5 rounded-full backdrop-blur-[1px]"
-            />
+            {/* Pure CSS spin — replaces framer-motion infinite rotate on main thread */}
+            <div className="absolute top-[10%] right-[10%] w-96 h-96 border border-primary-500/10 dark:border-primary-400/5 rounded-[40px] rotate-12 backdrop-blur-[2px] animate-spin-very-slow" />
+            <div className="absolute bottom-[20%] left-[5%] w-64 h-64 border border-accent-500/10 dark:border-accent-400/5 rounded-full backdrop-blur-[1px] animate-spin-very-slow-reverse" />
         </div>
     )
 }

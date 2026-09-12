@@ -7,7 +7,15 @@ import ClientEnhancements from '@/components/ui/ClientEnhancements'
 import { getBaseUrl } from '@/lib/seo'
 import './globals.css'
 
-const jost = Jost({ subsets: ['latin'], weight: ['400', '500', '600', '700', '800', '900'] })
+// Only load the weights actually used in the design.
+// Dropped 800 & 900 — saves ~50KB of font data. Heavy headings use font-bold (700).
+// display: swap ensures text is visible immediately while the font loads.
+const jost = Jost({
+    subsets: ['latin'],
+    weight: ['400', '500', '600', '700'],
+    display: 'swap',
+    preload: true,
+})
 
 export const metadata = {
     title: { default: 'VBS - Job-Ready Digital Skills', template: '%s | VBS' },
@@ -31,20 +39,24 @@ export const viewport = {
     maximumScale: 5,
     themeColor: '#4873AE',
 }
+
 export default function RootLayout({ children }) {
     return (
         <html lang="en">
             <head>
+                {/* Preconnect to Cloudinary so image DNS + TLS is resolved before images load */}
+                <link rel="preconnect" href="https://res.cloudinary.com" />
+                {/* GA: lazyOnload = loads after everything else, never blocks main thread */}
                 <Script
                     src="https://www.googletagmanager.com/gtag/js?id=G-Q1LM9373N7"
-                    strategy="afterInteractive"
+                    strategy="lazyOnload"
                 />
-                <Script id="google-analytics" strategy="afterInteractive">
+                <Script id="google-analytics" strategy="lazyOnload">
                     {`
                         window.dataLayer = window.dataLayer || [];
                         function gtag(){dataLayer.push(arguments);}
                         gtag('js', new Date());
-                        gtag('config', 'G-Q1LM9373N7');
+                        gtag('config', 'G-Q1LM9373N7', { send_page_view: false });
                     `}
                 </Script>
             </head>
