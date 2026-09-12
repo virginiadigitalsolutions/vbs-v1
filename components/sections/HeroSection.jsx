@@ -117,6 +117,7 @@ export default function HeroSection({ data }) {
                                             height={450}
                                             sizes="(min-width: 1024px) 600px, 92vw"
                                             className="h-full w-full object-cover object-center"
+                                            priority
                                         />
                                     </div>
                                     <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-black/10 dark:ring-white/10 pointer-events-none" />

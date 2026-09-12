@@ -1,13 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   skipTrailingSlashRedirect: true,
-  experimental: {
-    workerThreads: false,
-    cpus: 1
-  },
+  compress: true,
+  poweredByHeader: false,
+  staticPageGenerationTimeout: 120,
   images: {
     formats: ['image/avif', 'image/webp'],
     minimumCacheTTL: 31536000,
+    dangerouslyAllowSVG: true,
+    contentDispositionType: 'inline',
     remotePatterns: [
       {
         protocol: 'https',
@@ -34,6 +35,16 @@ const nextConfig = {
           {
             key: 'Cache-Control',
             value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+      {
+        // Short cache for API responses — prevents redundant fetches from same client
+        source: '/api/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, s-maxage=60, stale-while-revalidate=120',
           },
         ],
       },

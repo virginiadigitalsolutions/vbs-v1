@@ -67,13 +67,14 @@ export default function Navbar({ settings }) {
                     <Link href="/" className="flex items-center gap-3 group shrink-0">
                         {logoUrl ? (
                             <div className="relative flex items-center">
-                                <Image 
-                                    src={logoUrl} 
-                                    alt={siteName} 
-                                    width={200} 
-                                    height={60} 
-                                    className="h-14 lg:h-16 w-auto object-contain transition-all duration-500 group-hover:scale-105 dark:invert dark:hue-rotate-180" 
-                                    unoptimized 
+                                {/* priority: logo is always above-fold; no unoptimized — lets Next.js serve WebP/AVIF */}
+                                <Image
+                                    src={logoUrl}
+                                    alt={siteName}
+                                    width={200}
+                                    height={60}
+                                    className="h-14 lg:h-16 w-auto object-contain transition-all duration-500 group-hover:scale-105 dark:invert dark:hue-rotate-180"
+                                    priority
                                 />
                                 {/* Optional subtle glow in dark mode for image logos */}
                                 <div className="absolute inset-0 bg-white/5 dark:bg-white/10 blur-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
@@ -201,4 +202,3 @@ export default function Navbar({ settings }) {
         </header>
     )
 }
-

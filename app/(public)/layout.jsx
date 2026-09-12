@@ -1,3 +1,4 @@
+import { cache } from 'react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import SearchPalette from '@/components/ui/SearchPalette'
@@ -6,16 +7,24 @@ import JsonLd from '@/components/ui/JsonLd'
 import PageTransition from '@/components/ui/PageTransition'
 import { prisma, queryWithRetry } from '@/lib/db'
 
-export const revalidate = 300
+// 1 hour — site settings (logo, nav links, socials) rarely change.
+// ISR will revalidate in the background; visitors always get cached HTML.
+export const revalidate = 3600
 
-export default async function PublicLayout({ children }) {
-    let siteSettings = null
+// React.cache() deduplicates this call within a single render pass.
+// Both this layout and any child server component that calls it get the same result
+// with zero extra DB round-trips.
+const getSiteSettings = cache(async () => {
     try {
-        siteSettings = await queryWithRetry(() => prisma.siteSettings.findFirst())
+        return await queryWithRetry(() => prisma.siteSettings.findFirst())
     } catch (err) {
         console.error('[PublicLayout] Failed to fetch site settings:', err.message)
-        // Navbar/Footer gracefully fall back to defaults when settings is null.
+        return null
     }
+})
+
+export default async function PublicLayout({ children }) {
+    const siteSettings = await getSiteSettings()
 
     return (
         <>

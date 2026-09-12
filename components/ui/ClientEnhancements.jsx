@@ -1,33 +1,30 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { usePathname } from 'next/navigation'
 import { HiChevronUp } from 'react-icons/hi'
 
 export default function ClientEnhancements() {
-    const [loading, setLoading] = useState(true)
+    const [loading, setLoading] = useState(false)
     const [scrollPct, setScrollPct] = useState(0)
     const [showTopBtn, setShowTopBtn] = useState(false)
     const pathname = usePathname()
+    // Track if this is the initial mount — we don't show the loader on first load
+    const isFirstMount = useRef(true)
 
-    // 1. Loader Effect
+    // Loader Effect — only fires on client-side route changes, NOT on first paint
     useEffect(() => {
-        // Schedule the loading true state out of the sync effect loop to satisfy linter
-        const startTimer = setTimeout(() => {
-            setLoading(true)
-        }, 0)
-
-        const endTimer = setTimeout(() => {
-            setLoading(false)
-        }, 500)
-
-        return () => {
-            clearTimeout(startTimer)
-            clearTimeout(endTimer)
+        if (isFirstMount.current) {
+            isFirstMount.current = false
+            return
         }
+
+        setLoading(true)
+        const endTimer = setTimeout(() => setLoading(false), 280)
+        return () => clearTimeout(endTimer)
     }, [pathname])
 
-    // 2. Scroll Progress & Scroll-to-Top Button Visibility
+    // Scroll Progress & Scroll-to-Top Button Visibility
     useEffect(() => {
         const handleScroll = () => {
             const scrollTop = window.scrollY
@@ -66,9 +63,9 @@ export default function ClientEnhancements() {
                 <HiChevronUp className="text-3xl text-gray-400 group-hover:text-primary-600 z-10 transition-colors" />
             </button>
 
-            {/* Premium Light Glass Page Loader Overlay */}
+            {/* Premium Light Glass Page Loader Overlay — only shown on navigation, not initial load */}
             <div
-                className={`fixed inset-0 z-10000 flex flex-col items-center justify-center bg-[#F8FAFC]/90 backdrop-blur-2xl transition-opacity duration-500 ease-in-out pointer-events-none ${loading ? 'opacity-100 visible' : 'opacity-0 invisible'}`}
+                className={`fixed inset-0 z-10000 flex flex-col items-center justify-center bg-[#F8FAFC]/90 backdrop-blur-2xl transition-opacity duration-300 ease-in-out pointer-events-none ${loading ? 'opacity-100 visible' : 'opacity-0 invisible'}`}
             >
                 <div className="relative w-16 h-16 flex items-center justify-center mb-6">
                     <div className="absolute inset-0 border-4 border-primary-100 border-t-primary-500 rounded-full animate-spin" />
