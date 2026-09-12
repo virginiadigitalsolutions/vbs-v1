@@ -75,7 +75,10 @@ export async function GET(request) {
             })),
         ]
 
-        return NextResponse.json({ results })
+        const response = NextResponse.json({ results })
+        // Cache identical search queries for 60s at the CDN edge — most searches repeat
+        response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=120')
+        return response
     } catch (err) {
         console.error('[Search API] Error:', err.message)
         return NextResponse.json({ results: [], error: 'Search failed' }, { status: 500 })

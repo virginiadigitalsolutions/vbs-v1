@@ -1,6 +1,18 @@
+import { unstable_cache } from 'next/cache'
 import { prisma, queryWithRetry } from '@/lib/db'
 import Link from 'next/link'
 import { HiOutlineExternalLink, HiOutlineStar } from 'react-icons/hi'
+
+const getAffiliateLinks = unstable_cache(
+    () => queryWithRetry(() =>
+        prisma.affiliateLink.findMany({
+            where: { isActive: true },
+            orderBy: [{ isFeatured: 'desc' }, { createdAt: 'desc' }],
+        })
+    ),
+    ['resources-affiliate-links'],
+    { revalidate: 3600, tags: ['affiliate-links'] }
+)
 
 export async function generateMetadata() {
     return {
@@ -11,12 +23,7 @@ export async function generateMetadata() {
 }
 
 export default async function ResourcesPage() {
-    const links = await queryWithRetry(() =>
-        prisma.affiliateLink.findMany({
-            where: { isActive: true },
-            orderBy: [{ isFeatured: 'desc' }, { createdAt: 'desc' }],
-        })
-    )
+    const links = await getAffiliateLinks()
 
     const featured = links.filter(l => l.isFeatured)
     const regular = links.filter(l => !l.isFeatured)

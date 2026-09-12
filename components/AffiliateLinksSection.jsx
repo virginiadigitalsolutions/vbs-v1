@@ -1,21 +1,29 @@
+import { unstable_cache } from 'next/cache'
 import { prisma, queryWithRetry } from '@/lib/db'
 import { HiOutlineExternalLink, HiOutlineStar } from 'react-icons/hi'
+
+const getCachedAffiliateLinks = unstable_cache(
+    async ({ category, limit }) => {
+        const where = { isActive: true }
+        if (category) where.category = category
+        return queryWithRetry(() =>
+            prisma.affiliateLink.findMany({
+                where,
+                orderBy: [{ isFeatured: 'desc' }, { createdAt: 'desc' }],
+                take: limit || undefined,
+            })
+        )
+    },
+    ['affiliate-links-section'],
+    { revalidate: 3600, tags: ['affiliate-links'] }
+)
 
 /**
  * Server component that fetches and renders active affiliate links.
  * Can be embedded in any page. Optionally filter by category.
  */
 export default async function AffiliateLinksSection({ category, limit, title = 'Recommended Resources', showDisclosure = true }) {
-    const where = { isActive: true }
-    if (category) where.category = category
-
-    const links = await queryWithRetry(() =>
-        prisma.affiliateLink.findMany({
-            where,
-            orderBy: [{ isFeatured: 'desc' }, { createdAt: 'desc' }],
-            take: limit || undefined,
-        })
-    )
+    const links = await getCachedAffiliateLinks({ category: category ?? null, limit: limit ?? null })
 
     if (links.length === 0) return null
 
