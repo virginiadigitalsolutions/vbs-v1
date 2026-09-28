@@ -220,7 +220,7 @@ export default async function BlogPostPage({ params }) {
     const heroIntro = [post.excerpt, post.metaDesc]
         .map((value) => value?.trim())
         .find((value) => value && value.toLowerCase() !== displayTitle.toLowerCase())
-    const toc = blocks ? blocks.filter((block) => block.type === 'header') : []
+    const toc = blocks ? blocks.filter((block) => block.type === 'header' && (!block.data?.level || block.data.level === 2)) : []
     const categories = await queryWithRetry(() =>
         prisma.category.findMany({
             where: { posts: { some: { isPublished: true } } },
