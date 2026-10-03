@@ -417,51 +417,51 @@ This is a much stronger pathway than: See AI trend → Buy course → Collect ce
                 items: [
                     {
                         q: 'What are the 10,571 GPUs for AI education in India?',
-                        a: 'The 10,571 figure refers to GPUs allocated through the IndiaAI Compute initiative, which provides access to AI computing through cloud-based infrastructure. In August 2026, MeitY Secretary S. Krishnan said academia and students were eligible end-users under the initiative. The GPUs are not a dedicated pool of physical machines reserved exclusively for universities or undergraduate students.'
+                        a: 'The 10,571 figure refers to GPUs allocated through the IndiaAI Compute initiative. The programme provides eligible users, including students and academia, access to subsidised AI computing capacity through empanelled cloud providers.'
                     },
                     {
                         q: 'Can Indian students access IndiaAI Compute GPUs?',
-                        a: 'Yes, eligible students working on AI/ML-aligned academic projects can apply for compute through the IndiaAI Compute platform. The official portal lists students with aligned academic projects among the eligible categories, although access is subject to the programme\'s eligibility, verification and allocation process.'
+                        a: 'Eligible students can apply for access to IndiaAI Compute resources subject to the programme\'s eligibility requirements and access process.'
                     },
                     {
                         q: 'Do all college students automatically get access to the 10,571 GPUs?',
-                        a: 'No. The existence of the national compute pool does not mean every student automatically receives GPU access. The August 2026 report specifically noted that there is no fixed percentage of compute capacity earmarked exclusively for universities or undergraduate students.'
+                        a: 'No. The availability of GPUs through IndiaAI Compute does not mean that every college student automatically receives access. Students and institutions must meet the applicable eligibility and access requirements.'
                     },
                     {
                         q: 'Do I need a powerful computer to learn AI?',
-                        a: 'Not necessarily. Many beginner AI and data projects can be developed using cloud-based or browser-based environments. More advanced projects may require access to GPUs or other specialised computing resources, but you can build foundational AI, programming and data skills without owning expensive hardware.'
+                        a: 'Not necessarily. Many AI learning activities can be performed using cloud-based tools and platforms. Access to cloud computing can also reduce the need for students to own expensive specialised hardware.'
                     },
                     {
                         q: 'Do I need to learn Python to build an AI career?',
-                        a: 'Not necessarily. Python is particularly useful for technical AI, data science and machine learning pathways, but AI careers also exist at the intersection of AI with marketing, content, design, business, analytics, operations and other disciplines. The depth of programming you need should depend on the type of work you want to pursue.'
+                        a: 'Python is highly useful for technical AI and machine-learning careers, but not every AI-related career requires programming. Students can combine AI with fields such as marketing, content, design, business, analytics and other disciplines.'
                     },
                     {
                         q: 'Can commerce, arts and business students build AI-related careers?',
-                        a: 'Yes. AI can be combined with domain knowledge in areas such as finance, marketing, business analysis, content, design, healthcare and education. IndiaAI\'s own student-focused programmes have included students from disciplines including commerce, business, law, medicine and liberal arts, alongside technical fields.'
+                        a: 'Yes. AI can be combined with domain skills in areas such as marketing, content, business, design, research and analytics. Students do not necessarily need to become AI engineers to develop AI-related capabilities.'
                     },
                     {
                         q: 'What is the difference between AI literacy and AI capability?',
-                        a: 'AI literacy means understanding AI and being able to use AI tools appropriately. AI capability goes further: it involves applying AI to real problems, designing workflows, working with data or systems where appropriate, evaluating outputs and producing useful results. Demonstrated capability means being able to show what you built or accomplished.'
+                        a: 'AI literacy means understanding what AI is, what it can do and where its limitations lie. AI capability goes further by applying AI to real tasks, solving problems, building projects and demonstrating practical results.'
                     },
                     {
                         q: 'What AI skills should students learn in 2026?',
-                        a: 'There is no single AI skill that every student needs. Useful foundations include AI literacy, data literacy, problem-solving and responsible AI use. Students pursuing technical careers may also need Python, machine learning, cloud and data skills. Students in other fields can combine AI with skills such as marketing, content, design, finance, business analysis or research.'
+                        a: 'Students should develop AI literacy, AI-assisted productivity, analytical thinking, responsible AI practices and the ability to combine AI with a useful domain skill. Technical students can also develop programming, data and machine-learning capabilities.'
                     },
                     {
                         q: 'How can students build AI experience without an internship?',
-                        a: 'Start with practical projects. Choose a real or realistic problem, use appropriate AI tools, document your process and publish the result as a portfolio project. A well-documented project can demonstrate how you think and apply technology even before you have formal work experience.'
+                        a: 'Students can build experience by completing practical projects, documenting how they used AI, publishing their work, creating portfolio evidence and explaining the problems they solved and the results they achieved.'
                     },
                     {
                         q: 'Is getting an AI certificate enough to build an AI career?',
-                        a: 'A certificate can demonstrate that you completed a course, but it does not by itself demonstrate that you can apply what you learned. Combining structured learning with practice, projects and evidence of capability gives you more substance to discuss with employers or clients.'
+                        a: 'A certificate can demonstrate that you completed a course, but it does not by itself demonstrate practical capability. Projects, applied skills and portfolio evidence can provide stronger evidence of what you can actually do.'
                     },
                     {
                         q: 'What should a student do after learning basic AI?',
-                        a: 'Choose a direction and apply AI to it. For example, a marketing student could explore AI-assisted research and analytics, while a computer science student could move into Python and machine learning. The next step should generally be practice and project-building, rather than simply collecting another introductory certificate.'
+                        a: 'After learning the fundamentals, students should choose a direction, practise using AI in that domain, build a practical project, document the process and turn the result into portfolio evidence.'
                     },
                     {
                         q: 'What is the IndiaAI Mission?',
-                        a: 'The IndiaAI Mission is India\'s national initiative to build a broader AI ecosystem. The Union Cabinet approved it in March 2024 with an outlay of ₹10,371.92 crore over five years. Its pillars include AI compute capacity, foundation models, datasets, application development, future skills, startup financing, and safe and trusted AI.'
+                        a: 'IndiaAI is a national initiative focused on strengthening India\'s artificial intelligence ecosystem, including areas such as AI compute infrastructure, datasets, skills, innovation and responsible AI.'
                     }
                 ]
             }

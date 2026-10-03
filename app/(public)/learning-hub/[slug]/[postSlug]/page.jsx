@@ -8,6 +8,7 @@ import RelatedPosts from '@/components/ui/RelatedPosts'
 import JsonLd from '@/components/ui/JsonLd'
 import ReactMarkdown from 'react-markdown'
 import { parseBlogBlocks, resolveImageAlt, resolvePublishedAt, resolveReadTimeMinutes } from '@/lib/blog'
+import { getBaseUrl, getCanonicalUrl } from '@/lib/seo'
 
 export const revalidate = 300
 
@@ -228,21 +229,87 @@ export default async function BlogPostPage({ params }) {
             orderBy: { name: 'asc' },
         })
     )
+    const baseUrl = getBaseUrl()
+    const pageUrl = getCanonicalUrl(`/learning-hub/${expectedCategorySlug}/${post.slug}`)
+    const categoryUrl = getCanonicalUrl(`/learning-hub/${expectedCategorySlug}`)
+    const hubUrl = getCanonicalUrl('/learning-hub')
+
+    const faqBlocks = blocks ? blocks.filter((b) => b.type === 'faq' && Array.isArray(b.data?.items) && b.data.items.length > 0) : []
+    const faqItems = faqBlocks.flatMap((b) => b.data.items)
+
+    const isGpuPost = post.slug === '10571-gpus-ai-education-students-careers'
+
+    const schemaGraph = {
+        '@context': 'https://schema.org',
+        '@graph': [
+            {
+                '@type': 'BlogPosting',
+                '@id': `${pageUrl}#article`,
+                mainEntityOfPage: {
+                    '@type': 'WebPage',
+                    '@id': pageUrl,
+                },
+                headline: isGpuPost ? '10,571 GPUs. What does this mean for you?' : (post.h1 || post.title),
+                description: isGpuPost
+                    ? "What does India's growing access to AI computing infrastructure mean for students? Explore AI skills, career options and practical ways to build AI capability."
+                    : (post.metaDesc || post.excerpt || ''),
+                datePublished: publishedAt.toISOString().split('T')[0],
+                dateModified: (post.updatedAt || publishedAt).toISOString().split('T')[0],
+                author: {
+                    '@type': 'Organization',
+                    name: post.author?.name || 'VBS Editorial Team',
+                },
+                articleSection: post.category?.name || 'Digital Skills',
+                inLanguage: 'en-IN',
+                ...(post.featuredImg
+                    ? { image: post.featuredImg.startsWith('http') ? post.featuredImg : `${baseUrl}${post.featuredImg}` }
+                    : {}),
+            },
+            {
+                '@type': 'BreadcrumbList',
+                '@id': `${pageUrl}#breadcrumb`,
+                itemListElement: [
+                    {
+                        '@type': 'ListItem',
+                        position: 1,
+                        name: 'Learning Hub',
+                        item: hubUrl,
+                    },
+                    {
+                        '@type': 'ListItem',
+                        position: 2,
+                        name: post.category?.name || 'Digital Skills',
+                        item: categoryUrl,
+                    },
+                    {
+                        '@type': 'ListItem',
+                        position: 3,
+                        name: isGpuPost ? '10,571 GPUs. What does this mean for you?' : (post.h1 || post.title),
+                    },
+                ],
+            },
+            ...(faqItems.length > 0
+                ? [
+                      {
+                          '@type': 'FAQPage',
+                          '@id': `${pageUrl}#faq`,
+                          mainEntity: faqItems.map((item) => ({
+                              '@type': 'Question',
+                              name: item.q,
+                              acceptedAnswer: {
+                                  '@type': 'Answer',
+                                  text: item.a,
+                              },
+                          })),
+                      },
+                  ]
+                : []),
+        ],
+    }
 
     return (
         <div className="min-h-screen bg-[linear-gradient(180deg,#f8fbff_0%,#f1f6fd_32%,#eef3f8_100%)]">
-            <JsonLd
-                type="Article"
-                data={{
-                    title: post.metaTitle || post.title,
-                    description: post.metaDesc || post.excerpt || '',
-                    image: post.featuredImg || '',
-                    publishedAt: publishedAt.toISOString(),
-                    updatedAt: post.updatedAt.toISOString(),
-                    authorName: post.author.name,
-                    url: `/learning-hub/${expectedCategorySlug}/${post.slug}`,
-                }}
-            />
+            <JsonLd schema={schemaGraph} />
             <style>{`
                 .article-rich {
                     font-family: Georgia, "Times New Roman", serif;

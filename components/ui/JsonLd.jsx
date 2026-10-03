@@ -11,11 +11,26 @@ const DEFAULT_SOCIAL_LINKS = [
     'https://www.youtube.com/@yourvbschannel',
 ]
 
-export default function JsonLd({ type = 'Organization', data = {} }) {
+export default function JsonLd({ type = 'Organization', data = {}, schema: customSchema }) {
+    if (customSchema) {
+        return (
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(customSchema) }}
+            />
+        )
+    }
+
     const baseUrl = getBaseUrl()
     let schema = {}
 
     switch (type) {
+        case 'Graph':
+        case 'Raw':
+        case 'Custom':
+            schema = data
+            break
+
         case 'Organization':
             schema = {
                 '@context': 'https://schema.org',
