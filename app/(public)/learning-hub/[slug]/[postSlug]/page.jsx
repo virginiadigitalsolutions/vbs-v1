@@ -2,13 +2,15 @@ import { prisma, queryWithRetry } from '@/lib/db'
 import Container from '@/components/ui/Container'
 import Link from 'next/link'
 import Image from 'next/image'
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 import ShareButtons from '@/components/ui/ShareButtons'
 import RelatedPosts from '@/components/ui/RelatedPosts'
 import JsonLd from '@/components/ui/JsonLd'
 import ReactMarkdown from 'react-markdown'
 import { parseBlogBlocks, resolveImageAlt, resolvePublishedAt, resolveReadTimeMinutes } from '@/lib/blog'
 import { getBaseUrl, getCanonicalUrl } from '@/lib/seo'
+
+const stripSchemaHtml = (str = '') => str.replace(/<[^>]*>?/gm, ' ').replace(/\s+/g, ' ').trim()
 
 export const revalidate = 300
 
@@ -40,10 +42,14 @@ export async function generateMetadata({ params }) {
 
     if (!post) return { title: 'Post Not Found' }
 
+    // Always use the post's own category slug for the canonical URL,
+    // regardless of what `slug` segment the visitor arrived with.
+    const canonicalCategorySlug = post.category?.slug || 'posts'
+
     return {
         title: `${post.metaTitle || post.title} | VBS Learning Hub`,
         description: post.metaDesc || post.excerpt || 'Read the full article on VBS Digital.',
-        alternates: { canonical: `/learning-hub/${slug}/${post.slug}` },
+        alternates: { canonical: `/learning-hub/${canonicalCategorySlug}/${post.slug}` },
     }
 }
 
@@ -211,7 +217,9 @@ export default async function BlogPostPage({ params }) {
 
     const expectedCategorySlug = post.category?.slug || 'posts'
     if (slug !== expectedCategorySlug) {
-        notFound()
+        // Redirect to the canonical URL rather than 404ing — the post exists,
+        // the visitor just arrived via a stale/wrong category segment in the URL.
+        redirect(`/learning-hub/${expectedCategorySlug}/${post.slug}`)
     }
 
     const blocks = parseBlogBlocks(post.content)
@@ -221,7 +229,7 @@ export default async function BlogPostPage({ params }) {
     const heroIntro = [post.excerpt, post.metaDesc]
         .map((value) => value?.trim())
         .find((value) => value && value.toLowerCase() !== displayTitle.toLowerCase())
-    const toc = blocks ? blocks.filter((block) => block.type === 'header' && (!block.data?.level || block.data.level === 2)) : []
+    const toc = blocks ? blocks.filter((block) => block.type === 'header' && block.data?.level >= 2 && block.data.level <= 3) : []
     const categories = await queryWithRetry(() =>
         prisma.category.findMany({
             where: { posts: { some: { isPublished: true } } },
@@ -254,7 +262,7 @@ export default async function BlogPostPage({ params }) {
                     ? "What does India's growing access to AI computing infrastructure mean for students? Explore AI skills, career options and practical ways to build AI capability."
                     : (post.metaDesc || post.excerpt || ''),
                 datePublished: publishedAt.toISOString().split('T')[0],
-                dateModified: (post.updatedAt || publishedAt).toISOString().split('T')[0],
+                dateModified: new Date(post.updatedAt || publishedAt).toISOString().split('T')[0],
                 author: {
                     '@type': 'Organization',
                     name: post.author?.name || 'VBS Editorial Team',
@@ -298,7 +306,7 @@ export default async function BlogPostPage({ params }) {
                               name: item.q,
                               acceptedAnswer: {
                                   '@type': 'Answer',
-                                  text: item.a,
+                                  text: stripSchemaHtml(item.a),
                               },
                           })),
                       },
