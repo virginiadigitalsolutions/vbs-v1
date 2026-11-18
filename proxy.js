@@ -2,6 +2,7 @@ import { withAuth } from "next-auth/middleware"
 import { NextResponse } from "next/server";
 
 const exactGoneUrls = new Set([
+  '/ruban/',
   '/blogs/tag/why-is-seo-important-in-digital-marketing/',
   '/blogs/seo-strategy/',
   '/blogs/what-is-an-seo-audit-why-is-it-important-for-your-website/',
@@ -65,6 +66,7 @@ export const config = {
   matcher: [
     // Gone URLs
     '/blog',
+    '/ruban',
     '/blogs/:path*',
     
     // Admin URLs

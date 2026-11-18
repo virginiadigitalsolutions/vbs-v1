@@ -19,6 +19,7 @@ export async function generateStaticParams() {
         'learning-hub',
         'admin',
         'api',
+        'ruban',
     ]
 
     const pages = await queryWithRetry(() =>
@@ -52,7 +53,7 @@ export default async function DynamicCMSPage({ params }) {
 
     const { slug } = await params
 
-    if (slug === 'home' || slug === 'admin' || slug === 'api') {
+    if (slug === 'home' || slug === 'admin' || slug === 'api' || slug === 'ruban') {
         notFound()
     }
 

@@ -53,6 +53,17 @@ const nextConfig = {
   async redirects() {
     return [
       {
+        source: '/:path*',
+        has: [
+          {
+            type: 'host',
+            value: 'virginiabusinesssolutions.in',
+          },
+        ],
+        destination: 'https://www.virginiabusinesssolutions.in/:path*',
+        permanent: true,
+      },
+      {
         source: '/about',
         destination: '/about-us',
         permanent: true,

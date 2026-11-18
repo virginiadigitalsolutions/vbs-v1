@@ -39,6 +39,48 @@ export default async function sitemap() {
         console.error('[Sitemap] Failed to fetch blog posts:', err.message)
     }
 
+    // Only expose taxonomy pages that contain indexable published content.
+    let taxonomyPages = []
+    try {
+        const [categories, authors] = await Promise.all([
+            queryWithRetry(() =>
+                prisma.category.findMany({
+                    where: { posts: { some: { isPublished: true } } },
+                    select: { slug: true },
+                })
+            ),
+            queryWithRetry(() =>
+                prisma.adminUser.findMany({
+                    where: { posts: { some: { isPublished: true } } },
+                    select: { id: true },
+                })
+            ),
+        ])
+
+        taxonomyPages = [
+            ...categories.map((category) => ({
+                url: `${baseUrl}/learning-hub/${category.slug}`,
+                lastModified: new Date(),
+                changeFrequency: 'weekly',
+                priority: 0.6,
+            })),
+            {
+                url: `${baseUrl}/learning-hub/authors`,
+                lastModified: new Date(),
+                changeFrequency: 'weekly',
+                priority: 0.5,
+            },
+            ...authors.map((author) => ({
+                url: `${baseUrl}/learning-hub/authors/${author.id}`,
+                lastModified: new Date(),
+                changeFrequency: 'monthly',
+                priority: 0.5,
+            })),
+        ]
+    } catch (err) {
+        console.error('[Sitemap] Failed to fetch taxonomy pages:', err.message)
+    }
+
     // Dynamic CMS pages
     let cmsPages = []
     try {
@@ -49,7 +91,7 @@ export default async function sitemap() {
             })
         )
         cmsPages = pages
-            .filter((p) => !['home', 'about-us', 'digital-skills', 'courses-certifications', 'career-guides', 'career-roadmap', 'skill-quiz', 'learning-hub', 'contact', 'resources', 'terms-and-conditions', 'privacy-policy'].includes(p.slug))
+            .filter((p) => !['home', 'about-us', 'digital-skills', 'courses-certifications', 'career-guides', 'career-roadmap', 'skill-quiz', 'learning-hub', 'contact', 'resources', 'terms-and-conditions', 'privacy-policy', 'ruban'].includes(p.slug))
             .map((page) => ({
                 url: `${baseUrl}/${page.slug}`,
                 lastModified: new Date(),
@@ -60,5 +102,5 @@ export default async function sitemap() {
         console.error('[Sitemap] Failed to fetch CMS pages:', err.message)
     }
 
-    return [...staticPages, ...blogPosts, ...cmsPages]
+    return [...staticPages, ...blogPosts, ...taxonomyPages, ...cmsPages]
 }
