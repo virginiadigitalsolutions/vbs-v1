@@ -7,8 +7,8 @@ import ShareButtons from '@/components/ui/ShareButtons'
 import RelatedPosts from '@/components/ui/RelatedPosts'
 import JsonLd from '@/components/ui/JsonLd'
 import ReactMarkdown from 'react-markdown'
-import { parseBlogBlocks, resolveImageAlt, resolvePublishedAt, resolveReadTimeMinutes } from '@/lib/blog'
-import { getBaseUrl, getCanonicalUrl } from '@/lib/seo'
+import { parseBlogBlocks, postPlainText, resolveImageAlt, resolvePublishedAt, resolveReadTimeMinutes } from '@/lib/blog'
+import { buildMetadata, getBaseUrl, getCanonicalUrl, SITE, truncate } from '@/lib/seo'
 
 const stripSchemaHtml = (str = '') => str.replace(/<[^>]*>?/gm, ' ').replace(/\s+/g, ' ').trim()
 
@@ -36,21 +36,31 @@ export async function generateMetadata({ params }) {
     const post = await queryWithRetry(() =>
         prisma.post.findUnique({
             where: { slug: postSlug },
-            include: { category: true },
+            include: { category: true, tags: true, author: { select: { name: true } } },
         })
     )
 
-    if (!post) return { title: 'Post Not Found' }
+    if (!post || !post.isPublished) return { title: 'Post Not Found', robots: { index: false } }
 
     // Always use the post's own category slug for the canonical URL,
     // regardless of what `slug` segment the visitor arrived with.
     const canonicalCategorySlug = post.category?.slug || 'posts'
+    const publishedAt = resolvePublishedAt(post)
 
-    return {
+    return buildMetadata({
         title: `${post.metaTitle || post.title} | VBS Learning Hub`,
-        description: post.metaDesc || post.excerpt || 'Read the full article on VBS Digital.',
-        alternates: { canonical: `/learning-hub/${canonicalCategorySlug}/${post.slug}` },
-    }
+        description: post.metaDesc || post.excerpt || truncate(postPlainText(post.content), 160) || post.title,
+        path: `/learning-hub/${canonicalCategorySlug}/${post.slug}`,
+        // Falls back to the site-wide generated image when a post has no featured image.
+        image: post.featuredImg || undefined,
+        imageAlt: post.featuredImgAlt || post.title,
+        type: 'article',
+        publishedTime: publishedAt.toISOString(),
+        modifiedTime: new Date(post.updatedAt || publishedAt).toISOString(),
+        authors: post.author?.name ? [post.author.name] : undefined,
+        section: post.category?.name,
+        tags: post.tags?.map((t) => t.name),
+    })
 }
 
 const slugify = (text) => text?.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '') || ''
@@ -263,15 +273,26 @@ export default async function BlogPostPage({ params }) {
                     : (post.metaDesc || post.excerpt || ''),
                 datePublished: publishedAt.toISOString().split('T')[0],
                 dateModified: new Date(post.updatedAt || publishedAt).toISOString().split('T')[0],
-                author: {
-                    '@type': 'Organization',
-                    name: post.author?.name || 'VBS Editorial Team',
-                },
+                author: post.author?.name && post.author.name.toLowerCase() !== 'admin'
+                    ? {
+                          '@type': 'Person',
+                          '@id': getCanonicalUrl(`/learning-hub/authors/${post.author.id}#person`),
+                          name: post.author.name,
+                          url: getCanonicalUrl(`/learning-hub/authors/${post.author.id}`),
+                          ...(post.author.designation ? { jobTitle: post.author.designation } : {}),
+                          worksFor: { '@id': `${baseUrl}/#organization` },
+                      }
+                    : { '@id': `${baseUrl}/#organization` },
+                publisher: { '@id': `${baseUrl}/#organization` },
+                isPartOf: { '@id': `${baseUrl}/#website` },
                 articleSection: post.category?.name || 'Digital Skills',
-                inLanguage: 'en-IN',
-                ...(post.featuredImg
-                    ? { image: post.featuredImg.startsWith('http') ? post.featuredImg : `${baseUrl}${post.featuredImg}` }
-                    : {}),
+                inLanguage: SITE.language,
+                wordCount: postPlainText(post.content).split(/\s+/).filter(Boolean).length,
+                timeRequired: `PT${readTime}M`,
+                ...(post.tags?.length ? { keywords: post.tags.map((t) => t.name).join(', ') } : {}),
+                image: post.featuredImg
+                    ? post.featuredImg.startsWith('http') ? post.featuredImg : `${baseUrl}${post.featuredImg}`
+                    : `${baseUrl}/opengraph-image`,
             },
             {
                 '@type': 'BreadcrumbList',

@@ -1,3 +1,11 @@
+// Primary domain is non-www: https://virginiabusinesssolutions.in
+// Canonicals, sitemap, robots, JSON-LD, llms.txt, RSS and IndexNow all come
+// from getBaseUrl() in lib/seo.js (override with NEXT_PUBLIC_SITE_URL).
+//
+// The www -> non-www redirect is configured ONLY in Vercel (Project > Settings >
+// Domains: www.virginiabusinesssolutions.in "Redirect to" virginiabusinesssolutions.in,
+// 308). Keeping it in one place makes a redirect loop impossible.
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   skipTrailingSlashRedirect: true,
@@ -52,17 +60,6 @@ const nextConfig = {
   },
   async redirects() {
     return [
-      {
-        source: '/:path*',
-        has: [
-          {
-            type: 'host',
-            value: 'virginiabusinesssolutions.in',
-          },
-        ],
-        destination: 'https://www.virginiabusinesssolutions.in/:path*',
-        permanent: true,
-      },
       {
         source: '/about',
         destination: '/about-us',

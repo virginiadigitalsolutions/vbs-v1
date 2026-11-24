@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
 import { getAuthSession } from '@/lib/auth'
 import { revalidatePath } from 'next/cache'
+import { pingPageChange } from '@/lib/indexnow'
 
 export async function GET(request) {
   try {
@@ -64,6 +65,9 @@ export async function POST(request) {
     } else if (newSection.page?.slug) {
       revalidatePath(`/${newSection.page.slug}`)
     }
+
+    if (newSection.page?.isPublished) pingPageChange(newSection.page.slug)
+
 
     return NextResponse.json(newSection, { status: 201 })
   } catch (err) {

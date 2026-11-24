@@ -3,13 +3,7 @@
  * Usage: <JsonLd type="Organization" /> or <JsonLd type="Article" data={{...}} />
  */
 
-import { getBaseUrl } from '@/lib/seo'
-
-const DEFAULT_SOCIAL_LINKS = [
-    'https://www.linkedin.com/company/virginia-business-solutions',
-    'https://www.instagram.com/yourvbshandle',
-    'https://www.youtube.com/@yourvbschannel',
-]
+import { getBaseUrl, getLogoUrl, SITE } from '@/lib/seo'
 
 export default function JsonLd({ type = 'Organization', data = {}, schema: customSchema }) {
     if (customSchema) {
@@ -31,48 +25,61 @@ export default function JsonLd({ type = 'Organization', data = {}, schema: custo
             schema = data
             break
 
-        case 'Organization':
+        case 'Organization': {
+            const socialLinks = (Array.isArray(data.socialLinks) ? data.socialLinks : [])
+                .map((link) => (typeof link === 'string' ? link : link?.url))
+                .filter((link) => typeof link === 'string' && /^https?:\/\//.test(link) && !/yourvbs/i.test(link))
             schema = {
                 '@context': 'https://schema.org',
-                '@type': 'Organization',
-                name: 'Virginia Business Solutions',
+                '@type': 'EducationalOrganization',
+                '@id': `${baseUrl}/#organization`,
+                name: SITE.name,
+                alternateName: SITE.shortName,
                 url: baseUrl,
-                logo: `${baseUrl}/logo.png`,
-                description:
-                    'Digital career guidance platform helping students, English graduates, and aspiring creators discover practical digital career paths in content writing, video creation, and the creator economy.',
+                logo: {
+                    '@type': 'ImageObject',
+                    url: getLogoUrl(data.logoUrl),
+                },
+                image: `${baseUrl}/opengraph-image`,
+                description: SITE.description,
                 foundingDate: '2025',
-                areaServed: 'IN',
+                areaServed: { '@type': 'Country', name: 'India' },
                 knowsAbout: [
+                    'Digital Skills',
                     'Digital Career Guidance',
-                    'Content Writing Careers',
-                    'Video Creator Careers',
-                    'Creator Economy',
+                    'Online Courses and Certifications',
+                    'Career Roadmaps',
+                    'Digital Marketing',
+                    'Data Analytics',
+                    'Cloud and DevOps',
                     'AI Tools for Beginners',
+                    'Content Writing Careers',
                     'Freelance Career Development',
                 ],
                 contactPoint: {
                     '@type': 'ContactPoint',
                     contactType: 'customer service',
-                    email: 'info@virginiabusinesssolutions.in',
+                    email: data.email || SITE.email,
+                    areaServed: 'IN',
+                    availableLanguage: ['English'],
                 },
-                sameAs: DEFAULT_SOCIAL_LINKS,
+                ...(socialLinks.length ? { sameAs: socialLinks } : {}),
             }
             break
+        }
 
         case 'WebSite':
+            // SearchAction removed: Google retired the sitelinks search box (Nov 2024)
+            // and the old /?s= target did not exist on this site.
             schema = {
                 '@context': 'https://schema.org',
                 '@type': 'WebSite',
-                name: 'Virginia Business Solutions',
+                '@id': `${baseUrl}/#website`,
+                name: SITE.name,
+                alternateName: SITE.shortName,
                 url: baseUrl,
-                potentialAction: {
-                    '@type': 'SearchAction',
-                    target: {
-                        '@type': 'EntryPoint',
-                        urlTemplate: `${baseUrl}/?s={search_term_string}`,
-                    },
-                    'query-input': 'required name=search_term_string',
-                },
+                inLanguage: SITE.language,
+                publisher: { '@id': `${baseUrl}/#organization` },
             }
             break
 

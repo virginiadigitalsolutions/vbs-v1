@@ -1,3 +1,4 @@
+import { buildMetadata } from '@/lib/seo'
 import { Suspense } from 'react'
 import { unstable_cache } from 'next/cache'
 import SectionRenderer from '@/components/SectionRenderer'
@@ -18,11 +19,11 @@ const getPage = unstable_cache(
 
 export async function generateMetadata() {
     const page = await getPage('career-guides')
-    return {
+    return buildMetadata({
         title: page?.title || 'Career Guides',
         description: page?.metaDesc || 'Explore digital career paths in India.',
-        alternates: { canonical: '/career-guides' },
-    }
+        path: '/career-guides',
+    })
 }
 
 export default async function CareerGuidesPage() {

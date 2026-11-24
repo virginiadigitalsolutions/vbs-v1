@@ -1,7 +1,20 @@
-import { NextResponse } from 'next/server'
+import { NextResponse, after } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import { prisma } from '@/lib/db'
 import { getAuthSession } from '@/lib/auth'
-import { normalizePositiveInteger } from '@/lib/blog'
+import { applyAutoSeo, normalizePositiveInteger } from '@/lib/blog'
+import { postRelatedPaths, submitToIndexNow } from '@/lib/indexnow'
+
+// Refreshes cached pages immediately and pings IndexNow (Bing, Yandex, …) so new
+// or edited posts are picked up within minutes instead of days.
+function refreshAndIndex(posts) {
+    const paths = posts.filter(Boolean).flatMap(postRelatedPaths)
+    for (const path of new Set(paths)) {
+        try { revalidatePath(path) } catch {}
+    }
+    const shouldPing = posts.some((p) => p?.isPublished || p?.wasPublished)
+    if (shouldPing) after(() => submitToIndexNow(paths.filter((p) => !p.endsWith('.xml') && !p.endsWith('.txt'))))
+}
 
 export async function GET(request, { params }) {
     try {
@@ -31,7 +44,7 @@ export async function PATCH(request, { params }) {
         if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
         const body = await request.json()
-        const { title, slug, content, excerpt, featuredImg, featuredImgAlt, publishedAt, readTimeMinutes, isPublished, categoryId, authorId, h1, metaTitle, metaDesc, showToc } = body
+        const { title, slug, content, excerpt, featuredImg, featuredImgAlt, publishedAt, readTimeMinutes, isPublished, categoryId, authorId, h1, metaTitle, metaDesc, showToc } = applyAutoSeo(body)
 
         if (!title || !slug || !content) {
             return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
@@ -44,8 +57,14 @@ export async function PATCH(request, { params }) {
         
         const { id: paramId } = await params
 
+        const previous = await prisma.post.findUnique({
+            where: { id: parseInt(paramId) },
+            select: { slug: true, isPublished: true, authorId: true, category: { select: { slug: true } } },
+        })
+
         const post = await prisma.post.update({
             where: { id: parseInt(paramId) },
+            include: { category: { select: { slug: true } } },
             data: {
                 title,
                 slug,
@@ -65,6 +84,9 @@ export async function PATCH(request, { params }) {
             }
         })
 
+        // Old URL too, in case the slug/category changed or the post was unpublished.
+        refreshAndIndex([post, previous && { ...previous, wasPublished: previous.isPublished }])
+
         return NextResponse.json(post)
     } catch (err) {
         console.error(err)
@@ -82,9 +104,11 @@ export async function DELETE(request, { params }) {
 
         const { id: paramId } = await params
 
-        await prisma.post.delete({
-            where: { id: parseInt(paramId) }
+        const deleted = await prisma.post.delete({
+            where: { id: parseInt(paramId) },
+            include: { category: { select: { slug: true } } },
         })
+        refreshAndIndex([{ ...deleted, wasPublished: deleted.isPublished }])
 
         return NextResponse.json({ success: true })
     } catch (err) {

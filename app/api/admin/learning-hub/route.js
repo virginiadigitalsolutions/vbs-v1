@@ -1,7 +1,20 @@
-import { NextResponse } from 'next/server'
+import { NextResponse, after } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import { prisma } from '@/lib/db'
 import { getAuthSession } from '@/lib/auth'
-import { normalizePositiveInteger } from '@/lib/blog'
+import { applyAutoSeo, normalizePositiveInteger } from '@/lib/blog'
+import { postRelatedPaths, submitToIndexNow } from '@/lib/indexnow'
+
+// Refreshes cached pages immediately and pings IndexNow (Bing, Yandex, …) so new
+// or edited posts are picked up within minutes instead of days.
+function refreshAndIndex(posts) {
+    const paths = posts.filter(Boolean).flatMap(postRelatedPaths)
+    for (const path of new Set(paths)) {
+        try { revalidatePath(path) } catch {}
+    }
+    const shouldPing = posts.some((p) => p?.isPublished || p?.wasPublished)
+    if (shouldPing) after(() => submitToIndexNow(paths.filter((p) => !p.endsWith('.xml') && !p.endsWith('.txt'))))
+}
 
 export async function GET() {
     try {
@@ -25,7 +38,7 @@ export async function POST(request) {
         if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
         const body = await request.json()
-        const { title, slug, content, excerpt, featuredImg, featuredImgAlt, publishedAt, readTimeMinutes, isPublished, categoryId, authorId, h1, metaTitle, metaDesc, showToc } = body
+        const { title, slug, content, excerpt, featuredImg, featuredImgAlt, publishedAt, readTimeMinutes, isPublished, categoryId, authorId, h1, metaTitle, metaDesc, showToc } = applyAutoSeo(body)
 
         if (!title || !slug || !content) {
             return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
@@ -37,6 +50,7 @@ export async function POST(request) {
         }
 
         const post = await prisma.post.create({
+            include: { category: { select: { slug: true } } },
             data: {
                 title,
                 slug,
@@ -55,6 +69,8 @@ export async function POST(request) {
                 categoryId: categoryId ? parseInt(categoryId) : null
             }
         })
+
+        refreshAndIndex([post])
 
         return NextResponse.json(post, { status: 201 })
     } catch (err) {

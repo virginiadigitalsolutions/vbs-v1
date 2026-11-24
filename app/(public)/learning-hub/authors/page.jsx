@@ -1,3 +1,4 @@
+import { buildMetadata } from '@/lib/seo'
 import { prisma, queryWithRetry } from '@/lib/db'
 import Container from '@/components/ui/Container'
 import Link from 'next/link'
@@ -6,10 +7,11 @@ import Breadcrumbs from '@/components/ui/Breadcrumbs'
 import { Reveal, StaggerChildren, Child } from '@/components/ui/Reveal'
 import { FloatingShapes, GradientOrb } from '@/components/ui/SectionVectors'
 
-export const metadata = {
+export const metadata = buildMetadata({
     title: 'Our Authors | VBS Learning Hub',
     description: 'Meet the writers and engineers behind the VBS Learning Hub.',
-}
+    path: '/learning-hub/authors',
+})
 
 export const revalidate = 300
 

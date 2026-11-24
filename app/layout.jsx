@@ -4,7 +4,7 @@ import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import Providers from '@/app/providers'
 import ClientEnhancements from '@/components/ui/ClientEnhancements'
-import { getBaseUrl } from '@/lib/seo'
+import { getBaseUrl, SITE } from '@/lib/seo'
 import './globals.css'
 
 // Only load the weights actually used in the design.
@@ -19,12 +19,38 @@ const jost = Jost({
 
 export const metadata = {
     title: { default: 'VBS - Job-Ready Digital Skills', template: '%s | VBS' },
-    description:
-        'Practical courses, career guides and expert mentorship for students, early-career and working professionals.',
+    description: SITE.description,
     metadataBase: new URL(getBaseUrl()),
+    applicationName: SITE.name,
     manifest: '/manifest.json',
+    alternates: {
+        types: { 'application/rss+xml': [{ url: '/feed.xml', title: 'VBS Learning Hub' }] },
+    },
+    openGraph: {
+        type: 'website',
+        siteName: SITE.name,
+        locale: SITE.locale,
+        title: 'VBS - Job-Ready Digital Skills',
+        description: SITE.description,
+    },
+    twitter: { card: 'summary_large_image' },
+    robots: {
+        index: true,
+        follow: true,
+        googleBot: {
+            index: true,
+            follow: true,
+            'max-image-preview': 'large',
+            'max-snippet': -1,
+            'max-video-preview': -1,
+        },
+    },
     verification: {
         google: 'SGv4z2To9lhb1essbiWa5Jbz-z0sm6pYVMl9vDwhdFk',
+        // Bing Webmaster Tools (feeds ChatGPT search / Copilot): set BING_SITE_VERIFICATION
+        ...(process.env.BING_SITE_VERIFICATION
+            ? { other: { 'msvalidate.01': process.env.BING_SITE_VERIFICATION } }
+            : {}),
     },
     appleWebApp: {
         capable: true,
@@ -42,7 +68,7 @@ export const viewport = {
 
 export default function RootLayout({ children }) {
     return (
-        <html lang="en">
+        <html lang="en-IN">
             <head>
                 {/* Preconnect to Cloudinary so image DNS + TLS is resolved before images load */}
                 <link rel="preconnect" href="https://res.cloudinary.com" />

@@ -1,3 +1,4 @@
+import { buildMetadata } from '@/lib/seo'
 import { unstable_cache } from 'next/cache'
 import { prisma, queryWithRetry } from '@/lib/db'
 import Link from 'next/link'
@@ -15,11 +16,11 @@ const getAffiliateLinks = unstable_cache(
 )
 
 export async function generateMetadata() {
-    return {
+    return buildMetadata({
         title: 'Recommended Resources | Virginia Business Solutions',
         description: 'Handpicked courses, tools, and certifications we recommend for building real digital skills.',
-        alternates: { canonical: '/resources' },
-    }
+        path: '/resources',
+    })
 }
 
 export default async function ResourcesPage() {

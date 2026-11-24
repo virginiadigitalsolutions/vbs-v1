@@ -1,3 +1,4 @@
+import { buildMetadata } from '@/lib/seo'
 import { unstable_cache } from 'next/cache'
 import SectionRenderer from '@/components/SectionRenderer'
 import { prisma, queryWithRetry } from '@/lib/db'
@@ -16,11 +17,11 @@ const getPage = unstable_cache(
 
 export async function generateMetadata() {
     const page = await getPage('contact')
-    return {
+    return buildMetadata({
         title: page?.title || 'Contact | Digital Career Guidance Platform in India',
         description: page?.metaDesc || 'Get in touch for general queries, feedback, or partnership inquiries related to digital career guidance, skills, and structured learning pathways.',
-        alternates: { canonical: '/contact' },
-    }
+        path: '/contact',
+    })
 }
 
 export default async function ContactPage() {

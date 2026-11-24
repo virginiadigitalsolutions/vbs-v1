@@ -1,3 +1,4 @@
+import { buildMetadata } from '@/lib/seo'
 import { prisma, queryWithRetry } from '@/lib/db'
 import Container from '@/components/ui/Container'
 import Link from 'next/link'
@@ -33,11 +34,11 @@ export async function generateMetadata({ params }) {
         prisma.adminUser.findUnique({ where: { id: parseInt(id) }, select: { name: true, designation: true, bio: true } })
     )
     if (!author) return { title: 'Author Not Found' }
-    return {
+    return buildMetadata({
         title: `${author.name} | VBS Learning Hub`,
         description: author.bio || `Read articles by ${author.name} on the VBS Learning Hub.`,
-        alternates: { canonical: `/learning-hub/authors/${id}` },
-    }
+        path: `/learning-hub/authors/${id}`,
+    })
 }
 
 export default async function AuthorProfilePage({ params }) {

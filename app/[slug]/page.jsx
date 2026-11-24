@@ -1,3 +1,4 @@
+import { buildMetadata } from '@/lib/seo'
 import SectionRenderer from '@/components/SectionRenderer'
 import Container from '@/components/ui/Container'
 import Link from 'next/link'
@@ -40,11 +41,11 @@ export async function generateMetadata({ params }) {
     const page = await queryWithRetry(() => prisma.page.findUnique({ where: { slug } }))
     if (!page) return { title: 'Not Found' }
 
-    return {
+    return buildMetadata({
         title: page.title,
         description: page.metaDesc || 'VBS Digital custom page.',
-        alternates: { canonical: `/${slug}` },
-    }
+        path: `/${slug}`,
+    })
 }
 
 export default async function DynamicCMSPage({ params }) {

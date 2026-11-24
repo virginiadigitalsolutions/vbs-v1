@@ -1,3 +1,4 @@
+import { buildMetadata } from '@/lib/seo'
 import SectionRenderer from '@/components/SectionRenderer'
 import { prisma, queryWithRetry } from '@/lib/db'
 import { redirect } from 'next/navigation'
@@ -14,11 +15,11 @@ export async function generateMetadata({ params }) {
     )
 
     if (category) {
-        return {
-            title: `${category.name} | VBS Learning Hub`,
-            description: `Browse ${category.name} articles on the VBS Learning Hub.`,
-            alternates: { canonical: `/learning-hub/${slug}` },
-        }
+        return buildMetadata({
+            title: `${category.name} Articles & Guides | VBS Learning Hub`,
+            description: `Practical ${category.name.toLowerCase()} articles, guides and career advice for students and working professionals in India from the VBS Learning Hub.`,
+            path: `/learning-hub/${slug}`,
+        })
     }
 
     return {

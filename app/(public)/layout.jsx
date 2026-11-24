@@ -32,6 +32,7 @@ export default async function PublicLayout({ children }) {
                 type="Organization"
                 data={{
                     email: siteSettings?.contactEmail,
+                    logoUrl: siteSettings?.logoUrl,
                     socialLinks: siteSettings?.socialLinks ? Object.values(siteSettings.socialLinks) : [],
                 }}
             />

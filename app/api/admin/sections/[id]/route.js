@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
 import { getAuthSession } from '@/lib/auth'
 import { revalidatePath } from 'next/cache'
+import { pingPageChange } from '@/lib/indexnow'
 
 export async function PATCH(request, { params }) {
   try {
@@ -31,6 +32,7 @@ export async function PATCH(request, { params }) {
     } else if (updated.page?.slug) {
       revalidatePath(`/${updated.page.slug}`)
     }
+    if (updated.page?.isPublished) pingPageChange(updated.page.slug)
 
     return NextResponse.json(updated)
   } catch (err) {

@@ -1,3 +1,4 @@
+import { buildMetadata } from '@/lib/seo'
 import { Suspense } from 'react'
 import { unstable_cache } from 'next/cache'
 import SectionRenderer from '@/components/SectionRenderer'
@@ -29,17 +30,17 @@ const getHomePage = unstable_cache(
 export async function generateMetadata() {
     try {
         const page = await getHomePage()
-        return {
+        return buildMetadata({
             title: page?.title || 'Virginia Business Solutions',
             description: page?.metaDesc || 'Clear digital career guidance in India for students and working professionals.',
-            alternates: { canonical: '/' },
-        }
+            path: '/',
+        })
     } catch {
-        return {
+        return buildMetadata({
             title: 'Virginia Business Solutions',
             description: 'Clear digital career guidance in India for students and working professionals.',
-            alternates: { canonical: '/' },
-        }
+            path: '/',
+        })
     }
 }
 

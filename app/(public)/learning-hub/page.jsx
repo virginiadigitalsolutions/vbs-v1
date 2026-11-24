@@ -1,14 +1,15 @@
+import { buildMetadata } from '@/lib/seo'
 import SectionRenderer from '@/components/SectionRenderer'
 import { prisma, queryWithRetry } from '@/lib/db'
 import { getLearningHubListingData } from '@/lib/learning-hub'
 
 export async function generateMetadata() {
     const page = await queryWithRetry(() => prisma.page.findUnique({ where: { slug: 'learning-hub' } }))
-    return {
+    return buildMetadata({
         title: page?.title || 'VBS Learning Hub',
         description: page?.metaDesc || 'Insights, tutorials, and architectural deep-dives from the VBS engineering team.',
-        alternates: { canonical: '/learning-hub' },
-    }
+        path: '/learning-hub',
+    })
 }
 
 export default async function BlogIndexPage({ searchParams }) {
