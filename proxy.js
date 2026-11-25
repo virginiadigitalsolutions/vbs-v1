@@ -1,30 +1,28 @@
 import { withAuth } from "next-auth/middleware"
 import { NextResponse } from "next/server";
 
-const exactGoneUrls = new Set([
-  '/ruban/',
-  '/blogs/tag/why-is-seo-important-in-digital-marketing/',
-  '/blogs/seo-strategy/',
-  '/blogs/what-is-an-seo-audit-why-is-it-important-for-your-website/',
-  '/blogs/category/digital-marketing/',
-  '/blogs/why-are-social-media-handles-important-for-your-business/',
-  '/blogs/importance-of-content-marketing-for-your-digital-marketing-strategy/',
-  '/blogs/seo-company-in-chennai/',
-  '/blogs/digital-marketing-agency-in-chennai/',
-  '/blogs/9-ways-a-digital-marketing-agency-can-help-grow-your-business/',
-  '/blogs/seo-tips-in-2024/',
-  '/blogs/how-seo-works-for-business/',
-  '/blogs/seo-vs-sem/',
-  '/blogs/tag/user-experience-and-technical-seo/',
-  '/blogs/why-is-content-marketing-crucial-to-business-growth-in-2024/',
-  '/blogs/tag/credibility-and-trust/',
-  '/blogs/category/social-media/',
-  '/blogs/tag/contentmarketing/',
-  '/blogs/tag/link-building/',
-  '/blogs/tag/monitoring-analytics-the-performance/',
-  '/blogs/tag/seo-secrets-for-success-in-2024/feed/',
-  '/blogs/author/daniel-joseph/'
-]);
+// Legacy WordPress URLs (old /blogs/* posts, tags, categories, authors, feeds,
+// dated permalinks, wp-content, etc.) and other retired paths. Search Console
+// reported these as 404/410 — they now permanently (301) redirect to the home
+// page so visitors and any remaining link equity land somewhere useful.
+const legacyExactUrls = new Set(['/ruban', '/blogs']);
+const legacyPrefixes = [
+  '/blogs/',
+  '/wp-content/',
+  '/wp-admin/',
+  '/wp-includes/',
+  '/category/',
+  '/tag/',
+  '/author/',
+];
+
+function isLegacyUrl(path) {
+  const clean = path.length > 1 && path.endsWith('/') ? path.slice(0, -1) : path;
+  return (
+    legacyExactUrls.has(clean) ||
+    legacyPrefixes.some((prefix) => path.startsWith(prefix) || `${clean}/` === prefix)
+  );
+}
 
 const authMiddleware = withAuth({
   pages: {
@@ -35,23 +33,15 @@ const authMiddleware = withAuth({
 
 export default function middleware(req, event) {
   const path = req.nextUrl.pathname;
-  
-  // /blog redirects to /learning-hub, while blog listing and /blogs pages remain Gone
+
+  // /blog redirects to /learning-hub
   if (path === '/blog' || path === '/blog/') {
     return NextResponse.redirect(new URL('/learning-hub', req.url), 301);
   }
 
-  // 410 Gone logic
-  const pathWithSlash = path.endsWith('/') ? path : `${path}/`;
-  const pathWithoutSlash = path.endsWith('/') ? path.slice(0, -1) : path;
-  if (
-    exactGoneUrls.has(path) || 
-    exactGoneUrls.has(pathWithSlash) || 
-    exactGoneUrls.has(pathWithoutSlash) || 
-    path.startsWith('/blogs/') || 
-    path === '/blogs'
-  ) {
-    return new NextResponse(null, { status: 410, statusText: 'Gone' });
+  // Legacy URLs -> home page (301 permanent)
+  if (isLegacyUrl(path)) {
+    return NextResponse.redirect(new URL('/', req.url), 301);
   }
 
   // Only run auth middleware for admin routes
@@ -64,11 +54,20 @@ export default function middleware(req, event) {
 
 export const config = {
   matcher: [
-    // Gone URLs
+    // Legacy URLs (redirected)
     '/blog',
+    '/blog/',
     '/ruban',
+    '/ruban/',
+    '/blogs',
     '/blogs/:path*',
-    
+    '/wp-content/:path*',
+    '/wp-admin/:path*',
+    '/wp-includes/:path*',
+    '/category/:path*',
+    '/tag/:path*',
+    '/author/:path*',
+
     // Admin URLs
     '/admin/dashboard/:path*',
     '/admin/sections/:path*',
